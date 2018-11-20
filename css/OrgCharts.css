@@ -6,7 +6,7 @@
 	cursor: move;
 }
 
-.parent_div {
+.root_div .parent_div {
 	cursor: move;
 	display: inline-flex;
 }
@@ -14,14 +14,21 @@
 
 /*节点基础样式*/
 
-.node {
+.root_div .node {
 	cursor: move;
 	height: 30px;
 	border-radius: 3px;
 	line-height: 30px;
 }
 
-.node>span {
+/*自定义节点基础样式*/
+
+.root_div .node-users {
+	cursor: move;
+}
+
+.root_div .node>span {
+	max-width: 200px;
 	cursor: move;
 	overflow: hidden;
 	min-width: 40px;
@@ -30,33 +37,35 @@
 }
 
 
+/*竖线条常规样式*/
+
+.root_div .vertical-line-normal {
+	background: #3CAEE4;
+	height: 20px;
+	width: 1px;
+}
+
+
+/*横线条常规样式*/
+
+.root_div .transverse-line-normal {
+	background: #3CAEE4;
+	height: 1px;
+}
+
 /*节点常规样式*/
 
-.node-normal {
+.root_div .node-normal {
 	margin: 0px 20px;
 	color: #fff;
 	background: #3caee4;
 }
 
 
-/*竖线条常规样式*/
+/*线条常规样式*/
 
-.vertical-line-normal {
+.root_div .line {
 	padding: 0px;
-	background: #3caee4;
-	height: 20px;
-	width: 1px;
-	display: block;
-	margin: 0 auto;
-}
-
-
-/*横线条常规样式*/
-
-.transverse-line-normal {
-	padding: 0px;
-	background: #3caee4;
-	height: 1px;
 	display: block;
 	margin: 0 auto;
 }
@@ -64,14 +73,14 @@
 
 /*横线条基础样式*/
 
-.transverse-line-c {
+.root_div .transverse-line-c {
 	width: 100%;
 }
 
 
 /*横线条基础样式*/
 
-.transverse-line-s {
+.root_div .transverse-line-s {
 	float: right;
 	width: 50%;
 }
@@ -79,7 +88,83 @@
 
 /*横线条基础样式*/
 
-.transverse-line-e {
+.root_div .transverse-line-e {
 	float: left;
 	width: 50%;
+}
+
+/*主题样式*/
+.root_div .node-red {
+	margin: 0px 20px;
+	color: #fff;
+	background: red;
+}
+
+
+.root_div .vertical-line-red {
+	background: #ff1942;
+	height: 20px;
+	width: 1px;
+}
+
+.root_div .transverse-line-red {
+	background: #ff1942;
+	height: 1px;
+}
+
+.root_div .node-green {
+	margin: 0px 20px;
+	color: #fff;
+	background: #1ce45a;
+}
+
+
+.root_div .vertical-line-green {
+	background: #1ce45a;
+	height: 20px;
+	width: 1px;
+}
+
+.root_div .transverse-line-green {
+	background:#1ce45a;
+	height: 1px;
+}
+
+
+.root_div .node-black {
+	margin: 0px 20px;
+	color: #fff;
+	background: #000000;
+}
+
+
+.root_div .vertical-line-black {
+	background: #000000;
+	height: 20px;
+	width: 1px;
+}
+
+.root_div .transverse-line-black {
+	background:#000000;
+	height: 1px;
+}
+
+
+
+.root_div .node-gray {
+	margin: 0px 20px;
+	color: #fff;
+	background: #6f6f6f;
+}
+
+
+.root_div .vertical-line-gray {
+	background: #6f6f6f;
+	height: 20px;
+	width: 1px;
+}
+
+.root_div .transverse-line-gray {
+	background:#6f6f6f;
+	height: 1px;
 }

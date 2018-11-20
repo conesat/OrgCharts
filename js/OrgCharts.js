@@ -6,19 +6,29 @@ Org = {
 	el_style: 'normal', //元素风格
 	el_root: {}, //操作根元素
 	data: {}, //数据
-	init: function(id, data, style) { //初始化 id元素 data数据  style样式
+	drawByUrl: function(url) {
+
+		//请求服务器数据 start
+		var ajax = new XMLHttpRequest();
+		ajax.open('get', url);
+		ajax.send();
+		ajax.onreadystatechange = function() {
+			if(ajax.readyState == 4 && ajax.status == 200) {
+
+				Org.data = JSON.parse(ajax.responseText).data;
+				Org.draw();
+			}
+		}
+		//请求服务器数据 end
+	},
+	init: function(id, style) { //初始化 id元素   style样式
 		this.el_root = document.getElementById(id);
 
 		this.el_root.setAttribute("class", "root_div"); //根容器样式
 
-		this.data = data.data;
-
-		if(style != undefined) {
+		if(style != undefined && style != '') {
 			this.el_style = style;
 		}
-
-		this.draw();
-
 		//鼠标移动事件 start
 		var el = document.getElementById(id);
 		var x = 0;
@@ -63,6 +73,18 @@ Org = {
 		}
 		//鼠标移动事件 end
 	},
+	drawByData: function(data) { //初始化 data数据  
+		this.data = data;
+		this.draw();
+	},
+	//设置主题
+	setTheme: function(theme) {
+		if(theme != undefined && theme != '') {
+			Org.el_root.innerHTML = '';
+			Org.el_style = theme;
+			Org.draw();
+		}
+	},
 	draw: function() {
 		//nodes节点数组  parent容器
 		function drawNodes(nodes, parent) {
@@ -71,11 +93,17 @@ Org = {
 			for(var x in nodes) {
 
 				var node = document.createElement("div"); //节点 容器
+				var content = document.createElement("span"); //节点标题
+				if(nodes[x].html == '' || nodes[x].html == undefined) {
+					content.innerText = nodes[x].name; //节点标题内容
+					content.setAttribute("class", "node node-" + Org.el_style); //节点容器样式
 
-				var span_title = document.createElement("span"); //节点标题
+				} else {
+					content.setAttribute("class", " "); //节点容器样式
 
-				span_title.innerText = nodes[x].name; //节点标题内容
-				span_title.setAttribute("class", "node node-" + Org.el_style); //节点容器样式
+					content.innerHTML = nodes[x].html;
+				}
+
 				node.setAttribute("class", "node"); //节点容器样式
 
 				if(parent.parentNode.id != Org.el_root.id && nodes.length > 1) {
@@ -86,11 +114,11 @@ Org = {
 					 * 选择线条类型
 					 */
 					if(x == 0) {
-						line_h.setAttribute("class", "transverse-line-s transverse-line-" + Org.el_style); //节点容器样式
+						line_h.setAttribute("class", "line transverse-line-s transverse-line-" + Org.el_style); //节点容器样式
 					} else if(x == nodes.length - 1) {
-						line_h.setAttribute("class", "transverse-line-e transverse-line-" + Org.el_style); //节点容器样式
+						line_h.setAttribute("class", "line transverse-line-e transverse-line-" + Org.el_style); //节点容器样式
 					} else {
-						line_h.setAttribute("class", "transverse-line-c transverse-line-" + Org.el_style); //节点容器样式
+						line_h.setAttribute("class", "line transverse-line-c transverse-line-" + Org.el_style); //节点容器样式
 					}
 
 					node.appendChild(line_h);
@@ -98,20 +126,20 @@ Org = {
 					var line_div = document.createElement("div"); //头部线条
 					var line_s = document.createElement("div"); //头部线条
 
-					line_s.setAttribute("class", "vertical-line-" + Org.el_style); //节点容器样式
+					line_s.setAttribute("class", "line vertical-line-" + Org.el_style); //节点容器样式
 
 					line_div.appendChild(line_s);
 					node.appendChild(line_div); //添加标题
 				}
 
-				node.appendChild(span_title); //添加标题
+				node.appendChild(content); //添加标题
 
 				if(nodes[x].child.length > 0) {
 
 					var span_div = document.createElement("div"); //竖的线条
 					var span = document.createElement("span"); //竖的线条
 
-					span.setAttribute("class", "vertical-line-" + Org.el_style); //节点容器样式
+					span.setAttribute("class", "line vertical-line-" + Org.el_style); //节点容器样式
 
 					span_div.appendChild(span);
 
@@ -129,11 +157,15 @@ Org = {
 			}
 
 		}
+
+		/**
+		 * 创建第一个父容器
+		 */
 		var parent_div = document.createElement("div");
 		parent_div.setAttribute("class", "parent_div");
 		parent_div.id = 'parent_main';
-		this.el_root.appendChild(parent_div);
+		Org.el_root.appendChild(parent_div);
 
-		drawNodes(this.data, parent_div);
+		drawNodes(Org.data, parent_div);
 	}
 }

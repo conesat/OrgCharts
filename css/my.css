@@ -1,0 +1,25 @@
+/*加上.root_div 防止与其他样式冲突*/
+/*节点样式*/
+
+.root_div .node-my {
+	margin: 0px 20px;
+	color: #fff;
+	background: blue;
+}
+
+
+/*竖线条样式*/
+
+.root_div .vertical-line-my {
+	background: violet;
+	height: 20px;
+	width: 1px;
+}
+
+
+/*横线条样式*/
+
+.root_div .transverse-line-my {
+	background: violet;
+	height: 1px;
+}

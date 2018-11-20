@@ -5,8 +5,11 @@
 		<meta charset="utf-8" />
 		<title></title>
 	</head>
+	<!--必须的样式文件-->
 	<link rel="stylesheet" href="css/OrgCharts.css" />
-
+	
+	<!--自定义样式文件-->
+	<link rel="stylesheet" href="css/my.css" />
 	<body onload="draw();">
 		<div id="org_charts"></div>
 	</body>
@@ -15,60 +18,27 @@
 
 	<script type="application/javascript">
 		function draw() {
-			//数据格式
-			var data = {
-				code: 1,
-				data: [{
-					id: '123',
-					name: '主要部门1',
-					open: 'on',
-					child: [{
-						id: '123',
-						name: '子部门1-1',
-						open: 'on',
-						child: []
-					}, {
-						id: '123',
-						name: '子部门1-2',
-						open: 'on',
-						child: []
-					}, {
-						id: '222',
-						name: '子部门1-3',
-						open: 'on',
-						child: [{
-							id: '123',
-							name: '子部门1-3-1',
-							open: 'on',
-							child: []
-						},{
-							id: '123',
-							name: '子部门1-3-2',
-							open: 'on',
-							child: []
-						}]
-					}]
-				}, {
-					id: '222',
-					name: '主要部门2',
-					open: 'on',
-					child: [{
-						id: '123',
-						name: '主要部门2-1',
-						open: 'on',
-						child: []
-					}, {
-						id: '222',
-						name: '主要部门2-2',
-						open: 'on',
-						child: []
-					}]
-				}]
-			};
-
-			//绘制
-			Org.init("org_charts", data);
-
+			
+			//初始化组件  参数(元素id,主题)
+			Org.init("org_charts",'');
+			
+			//加载方式1   参数(数据地址)
+			Org.drawByUrl('data/data.json', '');
+			
+			//加载方式2 参数(json数据)
+			//Org.drawByData(data);
+			
+			/*
+			 * 设置主题  主题类型normal ,red ,green ,black ,gray
+			 * 可自定义样式文件
+			 * 类名格式如 
+			 * node-my 节点样式
+			 * vertical-line-my 竖线样式
+			 * transverse-line-my 横线样式
+			 * 详细参考my.style
+			 * 该方法
+			 */
+			Org.setTheme('gray');
 		}
 	</script>
 

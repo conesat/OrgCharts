@@ -7,9 +7,10 @@
 	</head>
 	<!--必须的样式文件-->
 	<link rel="stylesheet" href="css/OrgCharts.css" />
-	
+
 	<!--自定义样式文件-->
 	<link rel="stylesheet" href="css/my.css" />
+
 	<body onload="draw();">
 		<div id="org_charts"></div>
 	</body>
@@ -18,16 +19,44 @@
 
 	<script type="application/javascript">
 		function draw() {
-			
-			//初始化组件  参数(元素id,主题)
-			Org.init("org_charts",'');
-			
-			//加载方式1   参数(数据地址)
-			Org.drawByUrl('data/data.json', '');
-			
-			//加载方式2 参数(json数据)
-			//Org.drawByData(data);
-			
+
+			//初始化组件  
+			Org.init({
+				id: "org_charts",//必填
+				theme: '',//可选
+				success: function() {//可选
+					console.log("初始化完成")
+				},
+				error: function(e) {//可选
+					console.log(e);
+				},
+				onClick:function(el,data){//点击方法  el被点击的元素  data对应传入数据
+					console.log(data.id);
+				}
+			});
+
+			//加载方式1   
+			Org.drawByUrl({
+				url: 'data/data.json',//必选
+				success: function() {//可选
+					console.log("绘制化完成");
+				},
+				error: function(e) {//可选
+					console.log('绘制失败');
+				}
+			});
+
+			//加载方式2 
+			/*Org.drawByData({
+				data: 'jsondata',//必填json数据  格式请参照  data/data.json
+				success: function() {//可选
+					console.log("绘制化完成");
+				},
+				error: function(e) {//可选
+					console.log('绘制失败');
+				}
+			});*/
+
 			/*
 			 * 设置主题  主题类型normal ,red ,green ,black ,gray
 			 * 可自定义样式文件

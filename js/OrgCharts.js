@@ -3,86 +3,178 @@
  * by hzl
  */
 Org = {
+	onClick: {}, //元素点击事件
 	el_style: 'normal', //元素风格
 	el_root: {}, //操作根元素
 	data: {}, //数据
-	drawByUrl: function(url) {
+	//根据地址绘制
+	drawByUrl: function(data) {
+		try {
+			//请求服务器数据 start
+			var ajax = new XMLHttpRequest();
+			ajax.open('get', data.url);
+			ajax.send();
+			ajax.onreadystatechange = function() {
+				if(ajax.readyState == 4 && ajax.status == 200) {
+					Org.data = JSON.parse(ajax.responseText).data;
+					Org.draw();
 
-		//请求服务器数据 start
-		var ajax = new XMLHttpRequest();
-		ajax.open('get', url);
-		ajax.send();
-		ajax.onreadystatechange = function() {
-			if(ajax.readyState == 4 && ajax.status == 200) {
-
-				Org.data = JSON.parse(ajax.responseText).data;
-				Org.draw();
+					//加载完成  判断是否定义完成回调函数  有则执行回调
+					var isFunction = false;
+					try {  
+						isFunction = typeof(eval(data.success)) == "function";
+					} catch(e) {}
+					if(isFunction) {  
+						data.success();
+					}
+				}
 			}
-		}
-		//请求服务器数据 end
-	},
-	init: function(id, style) { //初始化 id元素   style样式
-		this.el_root = document.getElementById(id);
+			//请求服务器数据 end
 
-		this.el_root.setAttribute("class", "root_div"); //根容器样式
+		} catch(e) {
+			//加载失败 执行回调
+			var isFunction = false;
 
-		if(style != undefined && style != '') {
-			this.el_style = style;
-		}
-		//鼠标移动事件 start
-		var el = document.getElementById(id);
-		var x = 0;
-		var y = 0;
-		var l = 0;
-		var t = 0;
-		var isDown = false;
-		//鼠标按下事件
-		el.onmousedown = function(e) {
-			//获取x坐标和y坐标
-			x = e.clientX;
-			y = e.clientY;
+			try {  
+				isFunction = typeof(eval(data.error)) == "function";
+			} catch(e) {}
 
-			//获取左部和顶部的偏移量
-			l = el.offsetLeft;
-			t = el.offsetTop;
-			//开关打开
-			isDown = true;
-			//设置样式  
-			el.style.cursor = 'move';
-		}
-		//鼠标移动
-		window.onmousemove = function(e) {
-			if(isDown == false) {
-				return;
+			if(isFunction) {  
+				data.error(e);
 			}
-			//获取x和y
-			var nx = e.clientX;
-			var ny = e.clientY;
-			//计算移动后的左偏移量和顶部的偏移量
-			var nl = nx - (x - l);
-			var nt = ny - (y - t);
+			//加载失败 执行回调 end
+		}
 
-			el.style.left = nl + 'px';
-			el.style.top = nt + 'px';
-		}
-		//鼠标抬起事件
-		el.onmouseup = function() {
-			//开关关闭
-			isDown = false;
-			el.style.cursor = 'default';
-		}
-		//鼠标移动事件 end
 	},
+	//初始化 id元素   style样式
+	init: function(data) {
+		try {   //尝试初始化
+			this.el_root = document.getElementById(data.id);
+
+			this.el_root.setAttribute("class", "root_div"); //根容器样式
+
+			if(data.theme != undefined && data.theme != '') {
+				this.el_style = data.theme;
+			}
+			//鼠标移动事件 start
+			var el = document.getElementById(data.id);
+			var x = 0;
+			var y = 0;
+			var l = 0;
+			var t = 0;
+			var isDown = false;
+			//鼠标按下事件
+			el.onmousedown = function(e) {
+				//获取x坐标和y坐标
+				x = e.clientX;
+				y = e.clientY;
+
+				//获取左部和顶部的偏移量
+				l = el.offsetLeft;
+				t = el.offsetTop;
+				//开关打开
+				isDown = true;
+				//设置样式  
+				el.style.cursor = 'move';
+			
+			}
+
+			//鼠标移动
+			window.onmousemove = function(e) {
+				if(isDown == false) {
+					return;
+				}
+				//获取x和y
+				var nx = e.clientX;
+				var ny = e.clientY;
+				//计算移动后的左偏移量和顶部的偏移量
+				var nl = nx - (x - l);
+				var nt = ny - (y - t);
+
+				el.style.left = nl + 'px';
+				el.style.top = nt + 'px';
+			}
+			//鼠标抬起事件
+			el.onmouseup = function() {
+				//开关关闭
+				isDown = false;
+				el.style.cursor = 'default';
+			}
+			//鼠标移动事件 end
+			var isFunction = false;
+
+			try {  
+				isFunction = typeof(eval(data.onClick)) == "function";
+			} catch(e) {}
+			if(isFunction) {  
+				Org.onClick = data.onClick;
+			}
+			//初始化成功  判断是否定义完成回调函数  有则执行回调
+
+			try {  
+				isFunction = typeof(eval(data.success)) == "function";
+			} catch(e) {}
+			if(isFunction) {  
+				data.success();
+			}
+		} catch(e) {
+			//初始化异常  判断是否定义 异常回调函数 有则执行
+			if(this.el_root == undefined) {
+				e = '初始化错误: 找不到元素id';
+			}
+			var isFunction = false;
+
+			try {  
+				isFunction = typeof(eval(data.error)) == "function";
+			} catch(e) {}
+
+			if(isFunction) {  
+				data.error(e);
+			}
+
+		}
+	},
+	//根据数据绘制
 	drawByData: function(data) { //初始化 data数据  
-		this.data = data;
-		this.draw();
+		try {  
+			this.data = data.data;
+			this.draw();
+			//成功回调 start
+			var isFunction = false;
+
+			try {  
+				isFunction = typeof(eval(data.success)) == "function";
+			} catch(e) {}
+
+			if(isFunction) {  
+				data.success();
+			}
+			//成功回调 end
+		} catch(e) {
+			//异常回调 start
+			var isFunction = false;
+
+			try {  
+				isFunction = typeof(eval(data.error)) == "function";
+			} catch(e) {}
+
+			if(isFunction) {  
+				data.error(e);
+			}
+			//异常回调 end
+		}
+
 	},
 	//设置主题
 	setTheme: function(theme) {
-		if(theme != undefined && theme != '') {
-			Org.el_root.innerHTML = '';
-			Org.el_style = theme;
-			Org.draw();
+		try {  
+			if(theme != undefined && theme != '') {
+				Org.el_root.innerHTML = '';
+				Org.el_style = theme;
+				Org.draw();
+			}
+		} catch(e) {
+
 		}
 	},
 	draw: function() {
@@ -100,9 +192,22 @@ Org = {
 
 				} else {
 					content.setAttribute("class", " "); //节点容器样式
-
 					content.innerHTML = nodes[x].html;
 				}
+
+				//点击回调 start
+
+				var isFunction = false;
+
+				try {  
+					isFunction = typeof(eval(Org.onClick)) == "function";
+				} catch(e) {}
+
+				if(isFunction) {  
+					content.setAttribute("onclick", "Org.onClick(this, "+JSON.stringify(nodes[x])+")");
+		
+				}
+				//点击回调 end
 
 				node.setAttribute("class", "node"); //节点容器样式
 

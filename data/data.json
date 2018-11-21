@@ -2,21 +2,21 @@
 	"code": 1,
 	"data": [
 		{
-			"id": "123",
+			"id": "1",
 			"name": "主要部门1",
 			"open": "ture",
 			"html": "<div style='background: #eee;width: 100px;height: 100px;'>自定义的内容</div>",
 			"child": [
 				{
-					"id": "123",
-					"name": "主要部门1",
+					"id": "2",
+					"name": "主要部门2",
 					"open": "ture",
 					"html": "",
 					"child": []
 				},
 				{
-					"id": "123",
-					"name": "主要部门1",
+					"id": "3",
+					"name": "主要部门3",
 					"open": "ture",
 					"html": "",
 					"child": []

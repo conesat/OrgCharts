@@ -2,8 +2,9 @@
 
 .root_div {
 	text-align: center;
-	position: absolute;
+	position: relative;
 	cursor: move;
+	width: 100%;
 }
 
 .root_div .parent_div {
@@ -29,7 +30,7 @@
 
 .root_div .node>span {
 	max-width: 200px;
-	cursor: move;
+	cursor: pointer;
 	overflow: hidden;
 	min-width: 40px;
 	display: inline-flex;

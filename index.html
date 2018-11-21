@@ -12,7 +12,27 @@
 	<link rel="stylesheet" href="css/my.css" />
 
 	<body onload="draw();">
-		<div id="org_charts"></div>
+		
+		
+		<div style="background: #eee;height: 50px;width: 100%;text-align: center;line-height: 50px;">头部面板</div>
+		<div style="display: flex;flex-direction: row;">
+
+			<div style="width: 50px;height: 800px;padding: 2px;text-align: center;">
+				主题
+				<div onclick="changeTheme('normal')" style="width: 30px;height: 30px;background: #3caee4;margin: 5px auto;cursor: pointer;"></div>
+				<div onclick="changeTheme('red')" style="width: 30px;height: 30px;background: red;margin: 5px auto;cursor: pointer;"></div>
+				<div onclick="changeTheme('green')" style="width: 30px;height: 30px;background: #1ce45a;margin: 5px auto;cursor: pointer;"></div>
+				<div onclick="changeTheme('black')" style="width: 30px;height: 30px;background: #000000;margin: 5px auto;cursor: pointer;"></div>
+				<div onclick="changeTheme('gray')" style="width: 30px;height: 30px;background: #6f6f6f;margin: 5px auto;cursor: pointer;"></div>
+
+			</div>
+
+			<div style="flex:1;overflow: hidden;display: block;text-align: center;">
+				<div id="org_charts"></div>
+
+			</div>
+		</div>
+
 	</body>
 
 	<script type="text/javascript" src="js/OrgCharts.js"></script>
@@ -22,33 +42,34 @@
 
 			//初始化组件  
 			Org.init({
-				id: "org_charts",//必填
-				theme: '',//可选
-				success: function() {//可选
-					console.log("初始化完成")
+				id: "org_charts", //必填
+				theme: '', //可选
+				success: function() { //可选
+					//console.log("初始化完成")
 				},
-				error: function(e) {//可选
-					console.log(e);
+				error: function(e) { //可选
+					//console.log(e);
 				},
-				onClick:function(el,data){//点击方法  el被点击的元素  data对应传入数据
-					console.log(data.id);
+				onClick: function(el, data) { //点击方法  el被点击的元素  data对应传入数据
+					//console.log(data.id);
+					alert('点击了'+data.name);
 				}
 			});
 
 			//加载方式1   
 			Org.drawByUrl({
-				url: 'data/data.json',//必选
-				success: function() {//可选
-					console.log("绘制化完成");
+				url: 'data/data.json', //必选  返回格式参考 data/data.json
+				success: function() { //可选
+					//console.log("绘制化完成");
 				},
-				error: function(e) {//可选
-					console.log('绘制失败');
+				error: function(e) { //可选
+					//console.log('绘制失败');
 				}
 			});
 
 			//加载方式2 
 			/*Org.drawByData({
-				data: 'jsondata',//必填json数据  格式请参照  data/data.json
+				data: 'jsondata',//必填json数据  格式请参照  data/data.json  中的data
 				success: function() {//可选
 					console.log("绘制化完成");
 				},
@@ -67,7 +88,12 @@
 			 * 详细参考my.style
 			 * 该方法
 			 */
-			Org.setTheme('gray');
+			//Org.setTheme('gray');
+
+		}
+
+		function changeTheme(theme) {
+			Org.setTheme(theme);
 		}
 	</script>
 

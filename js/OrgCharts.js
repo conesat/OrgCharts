@@ -58,25 +58,22 @@ Org = {
 			}
 			//鼠标移动事件 start
 			var el = document.getElementById(data.id);
-			var x = 0;
-			var y = 0;
-			var l = 0;
-			var t = 0;
+			el.style.left = '0px';
+			el.style.top = '0px';
+			var x = 0;//
+			var y = 0;//
+			var l = 0;//记录上次移动位置
+			var t = 0;//记录上次移动位置
 			var isDown = false;
 			//鼠标按下事件
 			el.onmousedown = function(e) {
 				//获取x坐标和y坐标
 				x = e.clientX;
 				y = e.clientY;
-
-				//获取左部和顶部的偏移量
-				l = el.offsetLeft;
-				t = el.offsetTop;
 				//开关打开
 				isDown = true;
 				//设置样式  
 				el.style.cursor = 'move';
-			
 			}
 
 			//鼠标移动
@@ -87,19 +84,18 @@ Org = {
 				//获取x和y
 				var nx = e.clientX;
 				var ny = e.clientY;
-				//计算移动后的左偏移量和顶部的偏移量
-				var nl = nx - (x - l);
-				var nt = ny - (y - t);
-
-				el.style.left = nl + 'px';
-				el.style.top = nt + 'px';
+				el.style.left =l+ (nx-x) + 'px';
+				el.style.top =t+ (ny-y) + 'px';
 			}
 			//鼠标抬起事件
-			el.onmouseup = function() {
+			onmouseup = function() {
 				//开关关闭
 				isDown = false;
 				el.style.cursor = 'default';
+				l=parseInt(el.style.left.split("px")[0]);
+				t=parseInt(el.style.top.split("px")[0]);
 			}
+			
 			//鼠标移动事件 end
 			var isFunction = false;
 
@@ -204,8 +200,11 @@ Org = {
 				} catch(e) {}
 
 				if(isFunction) {  
-					content.setAttribute("onclick", "Org.onClick(this, "+JSON.stringify(nodes[x])+")");
-		
+					var data = {};
+					data.id = nodes[x].id;
+					data.name = nodes[x].name;
+					content.setAttribute("onclick", "Org.onClick(this, " + JSON.stringify(data) + ")");
+
 				}
 				//点击回调 end
 

@@ -4,7 +4,11 @@
 
 ![Image](https://github.com/conesat/OrgCharts/blob/master/github_image/rec2.gif)
 
+![Image](https://github.com/conesat/OrgCharts/blob/master/github_image/rec3.gif)
+
 已知问题:拖动时,鼠标放在元素上会触发点击回调
+
+更新:添加layui支持  使用方法参见 [demo](https://github.com/conesat/OrgCharts/blob/master/layui-orgCharts/demo/index.html)  
 
 用法:
 

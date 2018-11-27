@@ -16,11 +16,60 @@
 /*节点基础样式*/
 
 .root_div .node {
+	display: inline-block;
+	padding-bottom: 2px;
 	cursor: move;
-	height: 30px;
 	border-radius: 3px;
-	line-height: 30px;
 }
+
+.user-html {
+	display: inline-block;
+}
+
+.org-open-up {
+	cursor: pointer;
+	height: 20px;
+	margin: 2px auto;
+	width: 0;
+	height: 0;
+	border-left: 6px solid transparent;
+	border-right: 6px solid transparent;
+	border-bottom: 10px solid #fff;
+}
+
+.org-open-down {
+	cursor: pointer;
+	height: 20px;
+	margin: 2px auto;
+	width: 0;
+	height: 0;
+	border-left: 6px solid transparent;
+	border-right: 6px solid transparent;
+	border-top: 10px solid #fff;
+}
+
+.org-open-up-html {
+	cursor: pointer;
+	height: 20px;
+	margin: 2px auto;
+	width: 0;
+	height: 0;
+	border-left: 6px solid transparent;
+	border-right: 6px solid transparent;
+	border-bottom: 10px solid #333;
+}
+
+.org-open-down-html {
+	cursor: pointer;
+	height: 20px;
+	margin: 2px auto;
+	width: 0;
+	height: 0;
+	border-left: 6px solid transparent;
+	border-right: 6px solid transparent;
+	border-top: 10px solid #333;
+}
+
 
 /*自定义节点基础样式*/
 
@@ -53,6 +102,7 @@
 	background: #3CAEE4;
 	height: 1px;
 }
+
 
 /*节点常规样式*/
 
@@ -94,13 +144,14 @@
 	width: 50%;
 }
 
+
 /*主题样式*/
+
 .root_div .node-red {
 	margin: 0px 20px;
 	color: #fff;
 	background: red;
 }
-
 
 .root_div .vertical-line-red {
 	background: #ff1942;
@@ -119,7 +170,6 @@
 	background: #1ce45a;
 }
 
-
 .root_div .vertical-line-green {
 	background: #1ce45a;
 	height: 20px;
@@ -127,17 +177,15 @@
 }
 
 .root_div .transverse-line-green {
-	background:#1ce45a;
+	background: #1ce45a;
 	height: 1px;
 }
-
 
 .root_div .node-black {
 	margin: 0px 20px;
 	color: #fff;
 	background: #000000;
 }
-
 
 .root_div .vertical-line-black {
 	background: #000000;
@@ -146,18 +194,15 @@
 }
 
 .root_div .transverse-line-black {
-	background:#000000;
+	background: #000000;
 	height: 1px;
 }
-
-
 
 .root_div .node-gray {
 	margin: 0px 20px;
 	color: #fff;
 	background: #6f6f6f;
 }
-
 
 .root_div .vertical-line-gray {
 	background: #6f6f6f;
@@ -166,6 +211,6 @@
 }
 
 .root_div .transverse-line-gray {
-	background:#6f6f6f;
+	background: #6f6f6f;
 	height: 1px;
 }

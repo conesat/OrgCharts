@@ -41,7 +41,7 @@
 		function draw() {
 
 			//初始化组件  
-			Org.init({
+			orgCharts.init({
 				id: "org_charts", //必填
 				theme: '', //可选
 				success: function() { //可选
@@ -57,7 +57,7 @@
 			});
 
 			//加载方式1   
-			Org.drawByUrl({
+			orgCharts.drawByUrl({
 				url: 'data/data.json', //必选  返回格式参考 data/data.json
 				success: function() { //可选
 					//console.log("绘制化完成");
@@ -68,7 +68,7 @@
 			});
 
 			//加载方式2 
-			/*Org.drawByData({
+			/*orgCharts.drawByData({
 				data: 'jsondata',//必填json数据  格式请参照  data/data.json  中的data
 				success: function() {//可选
 					console.log("绘制化完成");
@@ -88,12 +88,12 @@
 			 * 详细参考my.style
 			 * 该方法
 			 */
-			//Org.setTheme('gray');
+			//orgCharts.setTheme('gray');
 
 		}
 
 		function changeTheme(theme) {
-			Org.setTheme(theme);
+			orgCharts.setTheme(theme);
 		}
 	</script>
 

@@ -15,7 +15,7 @@ layui.define('form', function(exports){ //假如该组件依赖 layui.form
   
   //外部接口
   ,orgCharts = {
-    onClick: {}, //元素点击事件
+	onClick: {}, //元素点击事件
 	el_style: 'normal', //元素风格
 	el_root: {}, //操作根元素
 	data: {}, //数据
@@ -72,10 +72,10 @@ layui.define('form', function(exports){ //假如该组件依赖 layui.form
 			var el = document.getElementById(data.id);
 			el.style.left = '0px';
 			el.style.top = '0px';
-			var x = 0;//
-			var y = 0;//
-			var l = 0;//记录上次移动位置
-			var t = 0;//记录上次移动位置
+			var x = 0; //
+			var y = 0; //
+			var l = 0; //记录上次移动位置
+			var t = 0; //记录上次移动位置
 			var isDown = false;
 			//鼠标按下事件
 			el.onmousedown = function(e) {
@@ -96,18 +96,18 @@ layui.define('form', function(exports){ //假如该组件依赖 layui.form
 				//获取x和y
 				var nx = e.clientX;
 				var ny = e.clientY;
-				el.style.left =l+ (nx-x) + 'px';
-				el.style.top =t+ (ny-y) + 'px';
+				el.style.left = l + (nx - x) + 'px';
+				el.style.top = t + (ny - y) + 'px';
 			}
 			//鼠标抬起事件
 			onmouseup = function() {
 				//开关关闭
 				isDown = false;
 				el.style.cursor = 'default';
-				l=parseInt(el.style.left.split("px")[0]);
-				t=parseInt(el.style.top.split("px")[0]);
+				l = parseInt(el.style.left.split("px")[0]);
+				t = parseInt(el.style.top.split("px")[0]);
 			}
-			
+
 			//鼠标移动事件 end
 			var isFunction = false;
 
@@ -115,7 +115,7 @@ layui.define('form', function(exports){ //假如该组件依赖 layui.form
 				isFunction = typeof(eval(data.onClick)) == "function";
 			} catch(e) {}
 			if(isFunction) {  
-				Org.onClick = data.onClick;
+				orgCharts.onClick = data.onClick;
 			}
 			//初始化成功  判断是否定义完成回调函数  有则执行回调
 
@@ -191,33 +191,84 @@ layui.define('form', function(exports){ //假如该组件依赖 layui.form
 			var level_count = 0; //跳过已经计算的层级
 
 			for(var x in nodes) {
+				var openShow = true; //是否展开子项
 				var node = document.createElement("div"); //节点 容器
-				var content = document.createElement("span"); //节点标题
-				if(nodes[x].html == '' || nodes[x].html == undefined) {
-					content.innerText = nodes[x].name; //节点标题内容
-					content.setAttribute("class", "node node-" + orgCharts.el_style); //节点容器样式
+				var contentSpan = document.createElement("span"); //节点标题
+				var content = document.createElement("div"); //节点标题
+				var open = document.createElement("div"); //节点 容器
 
+				if(nodes[x].html == '' || nodes[x].html == undefined) {
+					contentSpan.innerText = nodes[x].name; //节点标题内容
+					content.setAttribute("class", "node node-" + orgCharts.el_style); //节点容器样式
+					if(nodes[x].child.length > 0) {
+						if(nodes[x].open == 'true') {
+							open.setAttribute("class", "org-open-down"); //节点容器样式
+						} else {
+							open.setAttribute("class", "org-open-up"); //节点容器样式
+							openShow = false;
+						}
+					}
 				} else {
-					content.setAttribute("class", " "); //节点容器样式
-					content.innerHTML = nodes[x].html;
+					content.setAttribute("class", "user-html"); //节点容器样式
+					contentSpan.innerHTML = nodes[x].html;
+					if(nodes[x].child.length > 0) {
+						if(nodes[x].open == 'true') {
+							open.setAttribute("class", "org-open-down-html"); //节点容器样式
+						} else {
+							open.setAttribute("class", "org-open-up-html"); //节点容器样式
+							openShow = false;
+						}
+					}
 				}
 
+				content.appendChild(contentSpan);
+				content.appendChild(open);
+
 				//点击回调 start
-
 				var isFunction = false;
-
 				try {  
-					isFunction = typeof(eval(Org.onClick)) == "function";
+					isFunction = typeof(eval(orgCharts.onClick)) == "function";
 				} catch(e) {}
 
 				if(isFunction) {  
 					var data = {};
 					data.id = nodes[x].id;
 					data.name = nodes[x].name;
-					content.setAttribute("onclick", "Org.onClick(this, " + JSON.stringify(data) + ")");
+					contentSpan.setAttribute("onclick", "orgCharts.onClick(this, " + JSON.stringify(data) + ")");
 
 				}
 				//点击回调 end
+
+				//收起与隐藏 start
+				open.onclick = function() {
+					if(this.className == "org-open-up-html") {
+						this.setAttribute("class", "org-open-down-html");
+						show(this);
+					} else if(this.className == "org-open-down-html") {
+						this.setAttribute("class", "org-open-up-html");
+						hide(this);
+					} else if(this.className == "org-open-up") {
+						this.setAttribute("class", "org-open-down");
+						show(this);
+					} else if(this.className == "org-open-down") {
+						this.setAttribute("class", "org-open-up");
+						hide(this);
+					}
+				}
+				//收起与隐藏 end
+				function hide(el) {
+					var brother1 = el.parentNode.parentNode.lastChild;
+					var brother2 = brother1.previousSibling;
+					brother1.style.display = 'none';
+					brother2.style.display = 'none';
+				}
+
+				function show(el) {
+					var brother1 = el.parentNode.parentNode.lastChild;
+					var brother2 = brother1.previousSibling;
+					brother2.style.display = '';
+					brother1.style.display = '';
+				}
 
 				node.setAttribute("class", "node"); //节点容器样式
 
@@ -244,7 +295,8 @@ layui.define('form', function(exports){ //假如该组件依赖 layui.form
 					line_s.setAttribute("class", "line vertical-line-" + orgCharts.el_style); //节点容器样式
 
 					line_div.appendChild(line_s);
-					node.appendChild(line_div); //添加标题
+
+					node.appendChild(line_div); //添加线条
 				}
 
 				node.appendChild(content); //添加标题
@@ -257,16 +309,21 @@ layui.define('form', function(exports){ //假如该组件依赖 layui.form
 					span.setAttribute("class", "line vertical-line-" + orgCharts.el_style); //节点容器样式
 
 					span_div.appendChild(span);
-
-					node.appendChild(span_div);
-
 					var parent_div = document.createElement("div");
 					parent_div.setAttribute("class", "parent_div");
+					
+					if(!openShow) {
+						span_div.style.display = 'none';
+						parent_div.style.display = 'none';
+					}
+					node.appendChild(span_div);
+
 					node.appendChild(parent_div);
 
 					drawNodes(nodes[x].child, parent_div);
 
 				}
+
 				parent.appendChild(node);
 
 			}
@@ -283,8 +340,7 @@ layui.define('form', function(exports){ //假如该组件依赖 layui.form
 
 		drawNodes(orgCharts.data, parent_div);
 	}
-  }
-  
+}
   //操作当前实例
   ,thisIns = function(){
     var that = this

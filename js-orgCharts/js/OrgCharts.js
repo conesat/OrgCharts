@@ -2,7 +2,7 @@
  * 组织结构图展示工具
  * by hzl
  */
-Org = {
+orgCharts = {
 	onClick: {}, //元素点击事件
 	el_style: 'normal', //元素风格
 	el_root: {}, //操作根元素
@@ -16,8 +16,8 @@ Org = {
 			ajax.send();
 			ajax.onreadystatechange = function() {
 				if(ajax.readyState == 4 && ajax.status == 200) {
-					Org.data = JSON.parse(ajax.responseText).data;
-					Org.draw();
+					orgCharts.data = JSON.parse(ajax.responseText).data;
+					orgCharts.draw();
 
 					//加载完成  判断是否定义完成回调函数  有则执行回调
 					var isFunction = false;
@@ -103,7 +103,7 @@ Org = {
 				isFunction = typeof(eval(data.onClick)) == "function";
 			} catch(e) {}
 			if(isFunction) {  
-				Org.onClick = data.onClick;
+				orgCharts.onClick = data.onClick;
 			}
 			//初始化成功  判断是否定义完成回调函数  有则执行回调
 
@@ -165,9 +165,9 @@ Org = {
 	setTheme: function(theme) {
 		try {  
 			if(theme != undefined && theme != '') {
-				Org.el_root.innerHTML = '';
-				Org.el_style = theme;
-				Org.draw();
+				orgCharts.el_root.innerHTML = '';
+				orgCharts.el_style = theme;
+				orgCharts.draw();
 			}
 		} catch(e) {
 
@@ -187,7 +187,7 @@ Org = {
 
 				if(nodes[x].html == '' || nodes[x].html == undefined) {
 					contentSpan.innerText = nodes[x].name; //节点标题内容
-					content.setAttribute("class", "node node-" + Org.el_style); //节点容器样式
+					content.setAttribute("class", "node node-" + orgCharts.el_style); //节点容器样式
 					if(nodes[x].child.length > 0) {
 						if(nodes[x].open == 'true') {
 							open.setAttribute("class", "org-open-down"); //节点容器样式
@@ -215,14 +215,14 @@ Org = {
 				//点击回调 start
 				var isFunction = false;
 				try {  
-					isFunction = typeof(eval(Org.onClick)) == "function";
+					isFunction = typeof(eval(orgCharts.onClick)) == "function";
 				} catch(e) {}
 
 				if(isFunction) {  
 					var data = {};
 					data.id = nodes[x].id;
 					data.name = nodes[x].name;
-					contentSpan.setAttribute("onclick", "Org.onClick(this, " + JSON.stringify(data) + ")");
+					contentSpan.setAttribute("onclick", "orgCharts.onClick(this, " + JSON.stringify(data) + ")");
 
 				}
 				//点击回调 end
@@ -260,7 +260,7 @@ Org = {
 
 				node.setAttribute("class", "node"); //节点容器样式
 
-				if(parent.parentNode.id != Org.el_root.id && nodes.length > 1) {
+				if(parent.parentNode.id != orgCharts.el_root.id && nodes.length > 1) {
 
 					var line_h = document.createElement("div"); //头部线条
 
@@ -268,11 +268,11 @@ Org = {
 					 * 选择线条类型
 					 */
 					if(x == 0) {
-						line_h.setAttribute("class", "line transverse-line-s transverse-line-" + Org.el_style); //节点容器样式
+						line_h.setAttribute("class", "line transverse-line-s transverse-line-" + orgCharts.el_style); //节点容器样式
 					} else if(x == nodes.length - 1) {
-						line_h.setAttribute("class", "line transverse-line-e transverse-line-" + Org.el_style); //节点容器样式
+						line_h.setAttribute("class", "line transverse-line-e transverse-line-" + orgCharts.el_style); //节点容器样式
 					} else {
-						line_h.setAttribute("class", "line transverse-line-c transverse-line-" + Org.el_style); //节点容器样式
+						line_h.setAttribute("class", "line transverse-line-c transverse-line-" + orgCharts.el_style); //节点容器样式
 					}
 
 					node.appendChild(line_h);
@@ -280,7 +280,7 @@ Org = {
 					var line_div = document.createElement("div"); //头部线条
 					var line_s = document.createElement("div"); //头部线条
 
-					line_s.setAttribute("class", "line vertical-line-" + Org.el_style); //节点容器样式
+					line_s.setAttribute("class", "line vertical-line-" + orgCharts.el_style); //节点容器样式
 
 					line_div.appendChild(line_s);
 
@@ -294,7 +294,7 @@ Org = {
 					var span_div = document.createElement("div"); //竖的线条
 					var span = document.createElement("span"); //竖的线条
 
-					span.setAttribute("class", "line vertical-line-" + Org.el_style); //节点容器样式
+					span.setAttribute("class", "line vertical-line-" + orgCharts.el_style); //节点容器样式
 
 					span_div.appendChild(span);
 					var parent_div = document.createElement("div");
@@ -324,8 +324,8 @@ Org = {
 		var parent_div = document.createElement("div");
 		parent_div.setAttribute("class", "parent_div");
 		parent_div.id = 'parent_main';
-		Org.el_root.appendChild(parent_div);
+		orgCharts.el_root.appendChild(parent_div);
 
-		drawNodes(Org.data, parent_div);
+		drawNodes(orgCharts.data, parent_div);
 	}
 }

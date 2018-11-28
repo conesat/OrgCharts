@@ -382,7 +382,7 @@ layui.define('form', function(exports){ //假如该组件依赖 layui.form
   };
   
   //加载组件所需样式
-  layui.link(layui.cache.base + 'orgCharts.css?v=1', function(){
+  layui.link(layui.cache.base + 'orgCharts/orgCharts.css?v=1', function(){
     //样式加载完毕的回调
     
   }, 'orgCharts'); //此处的“orgCharts”要对应 orgCharts.css 中的样式： html #layuicss-orgCharts{}

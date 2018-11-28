@@ -32,12 +32,12 @@
 			</div>
 		</div>
 
-		<script src="../layui/layui.js"></script>
+		<script src="../../../layui/layui.js"></script>
 		<script>
 			layui.config({
-				base: '../orgCharts/' //配置 layui 第三方扩展组件存放的基础目录
+				base: '../../../layui_exts/' //配置 layui 第三方扩展组件存放的基础目录
 			}).extend({
-				orgCharts: 'orgCharts'
+				orgCharts: 'orgCharts/orgCharts'
 			}).use(['orgCharts', 'jquery'], function() {
 				var orgCharts = layui.orgCharts;
 				var $ = layui.$;

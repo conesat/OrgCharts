@@ -12,8 +12,7 @@
 	<link rel="stylesheet" href="css/my.css" />
 
 	<body onload="draw();">
-		
-		
+
 		<div style="background: #eee;height: 50px;width: 100%;text-align: center;line-height: 50px;">头部面板</div>
 		<div style="display: flex;flex-direction: row;">
 
@@ -44,6 +43,7 @@
 			orgCharts.init({
 				id: "org_charts", //必填
 				theme: '', //可选
+				menue:['add','delete','cut','copy'],//右键菜单项
 				success: function() { //可选
 					//console.log("初始化完成")
 				},
@@ -52,7 +52,7 @@
 				},
 				onClick: function(el, data) { //点击方法  el被点击的元素  data对应传入数据
 					//console.log(data.id);
-					alert('点击了'+data.name);
+					alert('点击了' + data.name);
 				}
 			});
 
@@ -67,7 +67,6 @@
 				}
 			});
 
-			//加载方式2 
 			/*orgCharts.drawByData({
 				data: 'jsondata',//必填json数据  格式请参照  data/data.json  中的data
 				success: function() {//可选

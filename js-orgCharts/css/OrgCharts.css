@@ -1,6 +1,9 @@
 /*层级样式*/
 
 .root_div {
+	-moz-user-select: none;
+	-webkit-user-select: none;
+	user-select: none;
 	text-align: center;
 	position: relative;
 	cursor: move;
@@ -32,9 +35,12 @@
 	margin: 2px auto;
 	width: 0;
 	height: 0;
-	border-left: 6px solid transparent;
-	border-right: 6px solid transparent;
-	border-bottom: 10px solid #fff;
+	border-left: 8px solid transparent;
+	border-right: 8px solid transparent;
+}
+
+.org-open-up-normal {
+	border-top: 10px solid #3CAEE4;
 }
 
 .org-open-down {
@@ -43,31 +49,12 @@
 	margin: 2px auto;
 	width: 0;
 	height: 0;
-	border-left: 6px solid transparent;
-	border-right: 6px solid transparent;
-	border-top: 10px solid #fff;
+	border-left: 8px solid transparent;
+	border-right: 8px solid transparent;
 }
 
-.org-open-up-html {
-	cursor: pointer;
-	height: 20px;
-	margin: 2px auto;
-	width: 0;
-	height: 0;
-	border-left: 6px solid transparent;
-	border-right: 6px solid transparent;
-	border-bottom: 10px solid #333;
-}
-
-.org-open-down-html {
-	cursor: pointer;
-	height: 20px;
-	margin: 2px auto;
-	width: 0;
-	height: 0;
-	border-left: 6px solid transparent;
-	border-right: 6px solid transparent;
-	border-top: 10px solid #333;
+.org-open-down-normal {
+	border-bottom: 10px solid #3CAEE4;
 }
 
 
@@ -109,7 +96,15 @@
 .root_div .node-normal {
 	margin: 0px 20px;
 	color: #fff;
+	/*background: #3caee4;*/
+}
+
+.root_div .node-normal>span {
+	line-height: 30px;
+	margin: 0px 20px;
+	color: #fff;
 	background: #3caee4;
+	border-radius: 3px;
 }
 
 
@@ -147,7 +142,15 @@
 
 /*主题样式*/
 
-.root_div .node-red {
+.org-open-up-red {
+	border-top: 10px solid red;
+}
+
+.org-open-down-red {
+	border-bottom: 10px solid red;
+}
+
+.root_div .node-red>span {
 	margin: 0px 20px;
 	color: #fff;
 	background: red;
@@ -164,7 +167,15 @@
 	height: 1px;
 }
 
-.root_div .node-green {
+.org-open-up-green {
+	border-top: 10px solid #1ce45a;
+}
+
+.org-open-down-green {
+	border-bottom: 10px solid #1ce45a;
+}
+
+.root_div .node-green>span {
 	margin: 0px 20px;
 	color: #fff;
 	background: #1ce45a;
@@ -181,7 +192,15 @@
 	height: 1px;
 }
 
-.root_div .node-black {
+.org-open-up-black {
+	border-top: 10px solid #000000;
+}
+
+.org-open-down-black {
+	border-bottom: 10px solid #000000;
+}
+
+.root_div .node-black>span {
 	margin: 0px 20px;
 	color: #fff;
 	background: #000000;
@@ -198,7 +217,15 @@
 	height: 1px;
 }
 
-.root_div .node-gray {
+.org-open-up-gray {
+	border-top: 10px solid #6f6f6f;
+}
+
+.org-open-down-gray {
+	border-bottom: 10px solid #6f6f6f;
+}
+
+.root_div .node-gray>span {
 	margin: 0px 20px;
 	color: #fff;
 	background: #6f6f6f;

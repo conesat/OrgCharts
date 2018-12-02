@@ -3,6 +3,8 @@
  * by hzl
  */
 orgCharts = {
+	target: null,
+	menue: [],
 	onClick: {}, //元素点击事件
 	el_style: 'normal', //元素风格
 	el_root: {}, //操作根元素
@@ -56,47 +58,13 @@ orgCharts = {
 			if(data.theme != undefined && data.theme != '') {
 				this.el_style = data.theme;
 			}
-			//鼠标移动事件 start
-			var el = document.getElementById(data.id);
-			el.style.left = '0px';
-			el.style.top = '0px';
-			var x = 0; //
-			var y = 0; //
-			var l = 0; //记录上次移动位置
-			var t = 0; //记录上次移动位置
-			var isDown = false;
-			//鼠标按下事件
-			el.onmousedown = function(e) {
-				//获取x坐标和y坐标
-				x = e.clientX;
-				y = e.clientY;
-				//开关打开
-				isDown = true;
-				//设置样式  
-				el.style.cursor = 'move';
+
+			if(data.menue.length > 0) {
+				orgCharts.menue = data.menue;
 			}
 
-			//鼠标移动
-			window.onmousemove = function(e) {
-				if(isDown == false) {
-					return;
-				}
-				//获取x和y
-				var nx = e.clientX;
-				var ny = e.clientY;
-				el.style.left = l + (nx - x) + 'px';
-				el.style.top = t + (ny - y) + 'px';
-			}
-			//鼠标抬起事件
-			onmouseup = function() {
-				//开关关闭
-				isDown = false;
-				el.style.cursor = 'default';
-				l = parseInt(el.style.left.split("px")[0]);
-				t = parseInt(el.style.top.split("px")[0]);
-			}
+			setMouseMove(data.id, true);
 
-			//鼠标移动事件 end
 			var isFunction = false;
 
 			try {  
@@ -175,7 +143,7 @@ orgCharts = {
 	},
 	draw: function() {
 		//nodes节点数组  parent容器
-		function drawNodes(nodes, parent) {
+		function drawNodes(nodes, parent, orgTab) {
 			var level_count = 0; //跳过已经计算的层级
 
 			for(var x in nodes) {
@@ -184,15 +152,15 @@ orgCharts = {
 				var contentSpan = document.createElement("span"); //节点标题
 				var content = document.createElement("div"); //节点标题
 				var open = document.createElement("div"); //节点 容器
-
+				contentSpan.setAttribute("org_tab", orgTab + x); //
 				if(nodes[x].html == '' || nodes[x].html == undefined) {
 					contentSpan.innerText = nodes[x].name; //节点标题内容
 					content.setAttribute("class", "node node-" + orgCharts.el_style); //节点容器样式
 					if(nodes[x].child.length > 0) {
 						if(nodes[x].open == 'true') {
-							open.setAttribute("class", "org-open-down"); //节点容器样式
+							open.setAttribute("class", "org-open-down org-open-down-" + orgCharts.el_style); //节点容器样式
 						} else {
-							open.setAttribute("class", "org-open-up"); //节点容器样式
+							open.setAttribute("class", "org-open-up org-open-up-" + orgCharts.el_style); //节点容器样式
 							openShow = false;
 						}
 					}
@@ -201,9 +169,9 @@ orgCharts = {
 					contentSpan.innerHTML = nodes[x].html;
 					if(nodes[x].child.length > 0) {
 						if(nodes[x].open == 'true') {
-							open.setAttribute("class", "org-open-down-html"); //节点容器样式
+							open.setAttribute("class", "org-open-down org-open-down-" + orgCharts.el_style); //节点容器样式
 						} else {
-							open.setAttribute("class", "org-open-up-html"); //节点容器样式
+							open.setAttribute("class", "org-open-up org-open-up-" + orgCharts.el_style); //节点容器样式
 							openShow = false;
 						}
 					}
@@ -213,35 +181,72 @@ orgCharts = {
 				content.appendChild(open);
 
 				//点击回调 start
-				var isFunction = false;
-				try {  
-					isFunction = typeof(eval(orgCharts.onClick)) == "function";
-				} catch(e) {}
 
-				if(isFunction) {  
-					var data = {};
-					data.id = nodes[x].id;
-					data.name = nodes[x].name;
-					contentSpan.setAttribute("onclick", "orgCharts.onClick(this, " + JSON.stringify(data) + ")");
+				contentSpan.onmouseup = function(oEvent) {
+					if(!oEvent) oEvent = window.event;
 
+					if(oEvent.button == 2) {
+						orgCharts.target = this;
+						var menue = document.getElementById("org_menue_id");
+						menue.style.left = this.offsetLeft + 'px';
+						menue.style.top = (this.offsetTop - 30) + 'px';
+						if(menue.style.display == "none") {
+							menue.style.display = "";
+						}
+					} else if(oEvent.button == 0) {
+
+						var isFunction = false;
+						try {  
+							isFunction = typeof(eval(orgCharts.onClick)) == "function";
+						} catch(e) {}
+
+						if(isFunction) {  
+							var tab = this.getAttribute("org_tab");
+							var tabs = tab.split("-");
+							var data = orgCharts.data[tabs[0]];
+							for(var x = 1; x < tabs.length; x++) {
+								data = getData(data, tabs[x]);
+							}
+
+							function getData(data, num) {
+								return data.child[num];
+							}
+							orgCharts.onClick(this, data);
+						}
+
+					}
 				}
+				contentSpan.oncontextmenu = function() {
+					event.returnValue = false;
+				}
+
 				//点击回调 end
 
 				//收起与隐藏 start
 				open.onclick = function() {
-					if(this.className == "org-open-up-html") {
-						this.setAttribute("class", "org-open-down-html");
+					var open = '';
+					if(this.className == "org-open-up org-open-up-" + orgCharts.el_style) {
+						this.setAttribute("class", "org-open-down org-open-down-" + orgCharts.el_style);
 						show(this);
-					} else if(this.className == "org-open-down-html") {
-						this.setAttribute("class", "org-open-up-html");
+						open = 'true';
+					} else if(this.className == "org-open-down org-open-down-" + orgCharts.el_style) {
+						this.setAttribute("class", "org-open-up org-open-up-" + orgCharts.el_style);
 						hide(this);
-					} else if(this.className == "org-open-up") {
-						this.setAttribute("class", "org-open-down");
-						show(this);
-					} else if(this.className == "org-open-down") {
-						this.setAttribute("class", "org-open-up");
-						hide(this);
+						open = 'false';
 					}
+					//获取标记
+					var tab = this.previousSibling.getAttribute("org_tab");
+					var tabs = tab.split("-");
+					var data = orgCharts.data[tabs[0]];
+					for(var x = 1; x < tabs.length; x++) {
+						data = getData(data, tabs[x]);
+					}
+
+					function getData(data, num) {
+						return data.child[num]; //对应节点获取数据
+					}
+
+					data.open = open; //设置节点开闭属性
 				}
 				//收起与隐藏 end
 				function hide(el) {
@@ -299,7 +304,7 @@ orgCharts = {
 					span_div.appendChild(span);
 					var parent_div = document.createElement("div");
 					parent_div.setAttribute("class", "parent_div");
-					
+
 					if(!openShow) {
 						span_div.style.display = 'none';
 						parent_div.style.display = 'none';
@@ -308,7 +313,7 @@ orgCharts = {
 
 					node.appendChild(parent_div);
 
-					drawNodes(nodes[x].child, parent_div);
+					drawNodes(nodes[x].child, parent_div, orgTab + x + "-");
 
 				}
 
@@ -321,11 +326,163 @@ orgCharts = {
 		/**
 		 * 创建第一个父容器
 		 */
+		orgCharts.el_root.innerHTML = '';
 		var parent_div = document.createElement("div");
 		parent_div.setAttribute("class", "parent_div");
 		parent_div.id = 'parent_main';
+
+		orgCharts.el_root.style.paddingTop = '50px';
 		orgCharts.el_root.appendChild(parent_div);
 
-		drawNodes(orgCharts.data, parent_div);
+		//初始化右键菜单
+		if(orgCharts.menue.length > 0) {
+			var menue = document.createElement("div");
+			var items = document.createElement("div");
+			var paste = false; //粘贴
+			items.style.display = 'flex';
+			items.style.position = 'relative';
+			items.style.height = '24px';
+			items.style.borderRadius = '5px';
+			items.style.background = '#eaeaea';
+			menue.id = 'org_menue_id';
+
+			for(var x in orgCharts.menue) {
+				var img = document.createElement('img');
+				img.style.width = '20px';
+				img.style.cursor = 'pointer';
+				img.style.margin = '2px';
+				switch(orgCharts.menue[x]) {
+					case 'add':
+						img.src = "svg/plus-circle.svg";
+						items.appendChild(img);
+						img.title = '添加节点';
+						break;
+					case 'delete':
+						img.src = "svg/minus-circle.svg";
+						items.appendChild(img);
+						img.title = '删除节点';
+						img.onclick = function() {
+							//获取标记
+							var tab = orgCharts.target.getAttribute("org_tab");
+							var tabs = tab.split("-");
+							if(tabs.length <= 1) {//判断是否根节点如果是则删除,否则遍历到对应节点
+								orgCharts.data.splice([tabs[0]], 1);
+							} else {
+								var data = orgCharts.data[tabs[0]];
+								for(var x = 1; x < tabs.length - 1; x++) {
+									data = getData(data, tabs[x]);
+								}
+
+								function getData(data, num) {
+									return data.child[num]; //对应节点获取数据
+								}
+								data.child.splice(tabs[tabs.length - 1], 1);
+							}
+							orgCharts.draw();
+						}
+						break;
+					case 'cut':
+						img.src = "svg/cut.svg";
+						items.appendChild(img);
+						img.title = '剪切';
+						paste = true;
+						break;
+					case 'copy':
+						img.src = "svg/copy.svg";
+						items.appendChild(img);
+						img.title = '拷贝';
+						paste = true;
+						break;
+				}
+
+			}
+			if(paste) {
+				var img = document.createElement('img');
+				img.style.width = '20px';
+				img.style.cursor = 'pointer';
+				img.style.margin = '2px';
+				img.src = "svg/paste.svg";
+				items.appendChild(img);
+				img.title = '粘贴';
+			}
+
+			var img = document.createElement('img');
+			img.style.width = '20px';
+			img.style.cursor = 'pointer';
+			img.style.margin = '2px';
+			img.src = "svg/close-circle.svg";
+			items.appendChild(img);
+			img.title = '关闭';
+			img.onclick = function() {
+				closeOrgMenue();
+			}
+			menue.appendChild(items);
+
+			menue.style.position = 'absolute';
+			menue.style.top = 0;
+			menue.style.display = 'none';
+
+			orgCharts.el_root.appendChild(menue);
+		}
+		//初始化右键菜单 end
+
+		drawNodes(orgCharts.data, parent_div, "");
 	}
+}
+
+//关闭菜单
+function closeOrgMenue() {
+	var menue = document.getElementById("org_menue_id");
+	if(menue.style.display == "") {
+		menue.style.display = "none";
+	}
+}
+
+function setMouseMove(id, T) {
+	//鼠标移动事件 start
+	var el = document.getElementById(id);
+	el.style.left = '0px';
+	el.style.top = '0px';
+	var x = 0; //
+	var y = 0; //
+	var l = 0; //记录上次移动位置
+	var t = 0; //记录上次移动位置
+	var isDown = false;
+	//鼠标按下事件
+	el.onmousedown = function(e) {
+		if(T) {
+			//获取x坐标和y坐标
+			x = e.clientX;
+			y = e.clientY;
+			//开关打开
+			isDown = true;
+			//设置样式  
+			el.style.cursor = 'move';
+		}
+
+	}
+
+	//鼠标移动
+	window.onmousemove = function(e) {
+		if(isDown == false || !T) {
+			return;
+		}
+		//获取x和y
+		var nx = e.clientX;
+		var ny = e.clientY;
+		el.style.left = l + (nx - x) + 'px';
+		el.style.top = t + (ny - y) + 'px';
+	}
+	//鼠标抬起事件
+	onmouseup = function() {
+		if(T) {
+			//开关关闭
+			isDown = false;
+			el.style.cursor = 'default';
+			l = parseInt(el.style.left.split("px")[0]);
+			t = parseInt(el.style.top.split("px")[0]);
+		}
+	}
+
+	//鼠标移动事件 end
 }

@@ -10,7 +10,7 @@
 
 已知问题:拖动时,鼠标放在元素上会触发点击回调
 
-更新:添加layui支持  使用方法参见 [demo](https://github.com/conesat/OrgCharts/blob/master/layui-orgCharts/demo/index.html)  
+更新:添加layui支持  使用方法参见 [demo](https://github.com/conesat/OrgCharts/tree/master/layui-orgCharts/layui_exts/orgCharts/demo)  
 
 用法:
 

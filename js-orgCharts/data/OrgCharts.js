@@ -3,22 +3,25 @@
  * by hzl
  */
 
-function OrgCharts() {
-	var orgCharts = this;
-	this.menuOperation = {
+function OrgCharts(){
+	this=orgCharts;
+}
+
+orgCharts = {
+	menuOperation: {
 		data: {},
 		cut: false,
 		copy: false
-	};
-	this.targetF = null, //上一次选择的节点
-		this.target = null, //当前选择的节点
-		this.menu = [];
-	this.onClick = {}; //元素点击事件
-	this.el_style = 'normal'; //元素风格
-	this.el_root = {}; //操作根元素
-	this.data = {}; //数据
+	},
+	targetF: null, //上一次选择的节点
+	target: null, //当前选择的节点
+	menu: [],
+	onClick: {}, //元素点击事件
+	el_style: 'normal', //元素风格
+	el_root: {}, //操作根元素
+	data: {}, //数据
 	//根据地址绘制
-	this.drawByUrl = function(data) {
+	drawByUrl: function(data) {
 		try {
 			//请求服务器数据 start
 			var ajax = new XMLHttpRequest();
@@ -55,9 +58,9 @@ function OrgCharts() {
 			//加载失败 执行回调 end
 		}
 
-	}
+	},
 	//初始化 id元素   style样式
-	this.init = function(data) {
+	init: function(data) {
 		try {   //尝试初始化
 			this.el_root = document.getElementById(data.id);
 
@@ -105,9 +108,9 @@ function OrgCharts() {
 			}
 
 		}
-	}
+	},
 	//根据数据绘制
-	this.drawByData = function(data) { //初始化 data数据  
+	drawByData: function(data) { //初始化 data数据  
 		try {  
 			this.data = data.data;
 			this.draw();
@@ -136,9 +139,9 @@ function OrgCharts() {
 			//异常回调 end
 		}
 
-	}
+	},
 	//设置主题
-	this.setTheme = function(theme) {
+	setTheme: function(theme) {
 		try {  
 			if(theme != undefined && theme != '') {
 				orgCharts.el_root.innerHTML = '';
@@ -148,9 +151,8 @@ function OrgCharts() {
 		} catch(e) {
 
 		}
-	}
-
-	this.draw = function() {
+	},
+	draw: function() {
 		//nodes节点数组  parent容器
 		function drawNodes(nodes, parent, orgTab) {
 			var level_count = 0; //跳过已经计算的层级
@@ -535,68 +537,65 @@ function OrgCharts() {
 
 		drawNodes(orgCharts.data, parent_div, "");
 	}
+}
 
-	function getData(dataX, num) {
-		return dataX.child[num]; //对应节点获取数据
+function getData(dataX, num) {
+	return dataX.child[num]; //对应节点获取数据
+}
+
+//关闭菜单
+function closeOrgMenue() {
+	var menu = document.getElementById("org_menu_id");
+	if(menu.style.display == "") {
+		menu.style.display = "none";
+	}
+}
+
+function setMouseMove(id, T) {
+	//鼠标移动事件 start
+	var el = document.getElementById(id);
+	el.style.left = '0px';
+	el.style.top = '0px';
+	var x = 0; //
+	var y = 0; //
+	var l = 0; //记录上次移动位置
+	var t = 0; //记录上次移动位置
+	var isDown = false;
+	//鼠标按下事件
+	el.onmousedown = function(e) {
+		if(T) {
+			//获取x坐标和y坐标
+			x = e.clientX;
+			y = e.clientY;
+			//开关打开
+			isDown = true;
+			//设置样式  
+			el.style.cursor = 'move';
+		}
+
 	}
 
-	//关闭菜单
-	function closeOrgMenue() {
-		var menu = document.getElementById("org_menu_id");
-		if(menu.style.display == "") {
-			menu.style.display = "none";
+	//鼠标移动
+	window.onmousemove = function(e) {
+		if(isDown == false || !T) {
+			return;
+		}
+		//获取x和y
+		var nx = e.clientX;
+		var ny = e.clientY;
+		el.style.left = l + (nx - x) + 'px';
+		el.style.top = t + (ny - y) + 'px';
+	}
+	//鼠标抬起事件
+	onmouseup = function() {
+		if(T) {
+			//开关关闭
+			isDown = false;
+			el.style.cursor = 'default';
+			l = parseInt(el.style.left.split("px")[0]);
+			t = parseInt(el.style.top.split("px")[0]);
 		}
 	}
 
-	//鼠标移动事件
-	function setMouseMove(id, T) {
-		//鼠标移动事件 start
-		var el = document.getElementById(id);
-		el.style.left = '0px';
-		el.style.top = '0px';
-		var x = 0; //
-		var y = 0; //
-		var l = 0; //记录上次移动位置
-		var t = 0; //记录上次移动位置
-		var isDown = false;
-		//鼠标按下事件
-		el.onmousedown = function(e) {
-
-			if(T) {
-				//获取x坐标和y坐标
-				x = e.clientX;
-				y = e.clientY;
-				//开关打开
-				isDown = true;
-				//设置样式  
-				el.style.cursor = 'move';
-			}
-
-		}
-
-		//鼠标移动
-		el.onmousemove = function(e) {
-			if(isDown == false || !T) {
-				return;
-			}
-			//获取x和y
-			var nx = e.clientX;
-			var ny = e.clientY;
-			el.style.left = l + (nx - x) + 'px';
-			el.style.top = t + (ny - y) + 'px';
-
-		}
-		//鼠标抬起事件
-		el.onmouseup = function() {
-			if(T) {
-				//开关关闭
-				isDown = false;
-				el.style.cursor = 'default';
-				l = parseInt(el.style.left.split("px")[0]);
-				t = parseInt(el.style.top.split("px")[0]);
-			}
-		}
-
-		//鼠标移动事件 end
-	}
+	//鼠标移动事件 end
 }

@@ -28,8 +28,9 @@
 
 			<div style="flex:1;overflow: hidden;display: block;text-align: center;">
 				<div id="org_charts"></div>
-
 			</div>
+			
+			
 		</div>
 
 	</body>
@@ -37,13 +38,15 @@
 	<script type="text/javascript" src="js/OrgCharts.js"></script>
 
 	<script type="application/javascript">
+		var orgCharts=new OrgCharts();
 		function draw() {
-
+			
+			
 			//初始化组件  
 			orgCharts.init({
 				id: "org_charts", //必填
 				theme: '', //可选
-				menue:['add','delete','cut','copy'],//右键菜单项
+				menu:['add','delete','cut','copy'],//右键菜单项
 				success: function() { //可选
 					//console.log("初始化完成")
 				},
@@ -66,7 +69,10 @@
 					//console.log('绘制失败');
 				}
 			});
-
+			
+			
+			
+			
 			/*orgCharts.drawByData({
 				data: 'jsondata',//必填json数据  格式请参照  data/data.json  中的data
 				success: function() {//可选

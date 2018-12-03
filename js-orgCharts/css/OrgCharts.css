@@ -27,7 +27,13 @@
 
 .user-html {
 	display: inline-block;
+	margin: 0 10px;
 }
+
+.user-html>span {
+	display: inline-block;
+}
+
 
 .org-open-up {
 	cursor: pointer;
@@ -71,6 +77,12 @@
 	min-width: 40px;
 	display: inline-flex;
 	padding: 2px 10px;
+	
+	line-height: 30px;
+	margin: 0px 20px;
+	color: #fff;
+	background: #3caee4;
+	border-radius: 3px;
 }
 
 
@@ -94,17 +106,9 @@
 /*节点常规样式*/
 
 .root_div .node-normal {
-	margin: 0px 20px;
+	/*margin: 0px 20px;*/
 	color: #fff;
 	/*background: #3caee4;*/
-}
-
-.root_div .node-normal>span {
-	line-height: 30px;
-	margin: 0px 20px;
-	color: #fff;
-	background: #3caee4;
-	border-radius: 3px;
 }
 
 

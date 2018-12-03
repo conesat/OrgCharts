@@ -56,6 +56,11 @@
 				onClick: function(el, data) { //点击方法  el被点击的元素  data对应传入数据
 					//console.log(data.id);
 					alert('点击了' + data.name);
+				},
+				onAdd:function(data,tab){//添加回调 data为点击的数据  tab为标记点,用于插入新数据
+					var myData=new Object();
+					myData.name=prompt("输入name","新节点");
+					orgCharts.addNodes(myData,tab);
 				}
 			});
 

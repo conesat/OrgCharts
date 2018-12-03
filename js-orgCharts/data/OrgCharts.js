@@ -3,25 +3,22 @@
  * by hzl
  */
 
-function OrgCharts(){
-	this=orgCharts;
-}
-
-orgCharts = {
-	menuOperation: {
+function OrgCharts() {
+	var orgCharts = this;
+	this.menuOperation = {
 		data: {},
 		cut: false,
 		copy: false
-	},
-	targetF: null, //上一次选择的节点
-	target: null, //当前选择的节点
-	menu: [],
-	onClick: {}, //元素点击事件
-	el_style: 'normal', //元素风格
-	el_root: {}, //操作根元素
-	data: {}, //数据
+	};
+	this.targetF = null, //上一次选择的节点
+		this.target = null, //当前选择的节点
+		this.menu = [];
+	this.onClick = {}; //元素点击事件
+	this.el_style = 'normal'; //元素风格
+	this.el_root = {}; //操作根元素
+	this.data = {}; //数据
 	//根据地址绘制
-	drawByUrl: function(data) {
+	this.drawByUrl = function(data) {
 		try {
 			//请求服务器数据 start
 			var ajax = new XMLHttpRequest();
@@ -58,9 +55,9 @@ orgCharts = {
 			//加载失败 执行回调 end
 		}
 
-	},
+	}
 	//初始化 id元素   style样式
-	init: function(data) {
+	this.init = function(data) {
 		try {   //尝试初始化
 			this.el_root = document.getElementById(data.id);
 
@@ -108,9 +105,9 @@ orgCharts = {
 			}
 
 		}
-	},
+	}
 	//根据数据绘制
-	drawByData: function(data) { //初始化 data数据  
+	this.drawByData = function(data) { //初始化 data数据  
 		try {  
 			this.data = data.data;
 			this.draw();
@@ -139,9 +136,9 @@ orgCharts = {
 			//异常回调 end
 		}
 
-	},
+	}
 	//设置主题
-	setTheme: function(theme) {
+	this.setTheme = function(theme) {
 		try {  
 			if(theme != undefined && theme != '') {
 				orgCharts.el_root.innerHTML = '';
@@ -151,8 +148,9 @@ orgCharts = {
 		} catch(e) {
 
 		}
-	},
-	draw: function() {
+	}
+
+	this.draw = function() {
 		//nodes节点数组  parent容器
 		function drawNodes(nodes, parent, orgTab) {
 			var level_count = 0; //跳过已经计算的层级
@@ -195,15 +193,8 @@ orgCharts = {
 
 				contentSpan.onmouseup = function(oEvent) {
 					if(!oEvent) oEvent = window.event;
-
 					if(oEvent.button == 2) {
-						if(orgCharts.target == null) {
-							orgCharts.targetF = this;
-							orgCharts.target = this;
-						} else {
-							orgCharts.targetF = orgCharts.target;
-							orgCharts.target = this;
-						}
+						orgCharts.target = this;
 						var menu = document.getElementById("org_menu_id");
 						menu.style.left = this.offsetLeft + 'px';
 						menu.style.top = (this.offsetTop - 30) + 'px';
@@ -394,8 +385,7 @@ orgCharts = {
 						img.title = '剪切';
 						paste = true;
 						img.onclick = function() {
-							orgCharts.targetF.parentNode.parentNode.style.border = orgCharts.target.parentNode.parentNode.style.border;
-							orgCharts.targetF.parentNode.parentNode.style.background = orgCharts.target.parentNode.parentNode.style.background;
+							orgCharts.targetF = orgCharts.target;
 							orgCharts.target.parentNode.parentNode.style.border = '1px dashed #bf2727';
 							orgCharts.target.parentNode.parentNode.style.background = '#fbfbfb';
 							orgCharts.menuOperation.cut = true;
@@ -403,6 +393,7 @@ orgCharts = {
 							orgCharts.target.parentNode.parentNode.onmouseup = function() {
 								closeOrgMenue()
 							}
+							closeOrgMenue();
 
 						}
 						break;
@@ -412,10 +403,7 @@ orgCharts = {
 						img.title = '拷贝';
 						paste = true;
 						img.onclick = function() {
-							orgCharts.targetF.parentNode.parentNode.style.border = orgCharts.target.parentNode.parentNode.style.border;
-							orgCharts.targetF.parentNode.parentNode.style.background = orgCharts.target.parentNode.parentNode.style.background;
-							orgCharts.targetF.parentNode.parentNode.onmouseup = orgCharts.target.parentNode.parentNode.onmouseup;
-
+							orgCharts.targetF = orgCharts.target;
 							orgCharts.target.parentNode.parentNode.style.border = '1px dashed #bf2727';
 							orgCharts.target.parentNode.parentNode.style.background = '#fbfbfb';
 							orgCharts.menuOperation.copy = true;
@@ -434,9 +422,11 @@ orgCharts = {
 				img.src = "svg/paste.svg";
 				items.appendChild(img);
 				img.title = '粘贴';
-
 				img.onclick = function() {
+					orgCharts.targetF.parentNode.parentNode.style.border = 'none';
+					orgCharts.targetF.parentNode.parentNode.style.background = '';
 					if(orgCharts.menuOperation.cut == true) {
+
 						//获取标记
 						var tab = orgCharts.targetF.getAttribute("org_tab");
 						var tabs = tab.split("-");
@@ -471,35 +461,27 @@ orgCharts = {
 						orgCharts.draw();
 						orgCharts.menuOperation.cut = false;
 					} else if(orgCharts.menuOperation.copy == true) {
-						//获取标记
+						//获取源 标记
 						var tab = orgCharts.targetF.getAttribute("org_tab");
 						var tabs = tab.split("-");
 						var dataTemp = {};
-						var num = 0;
-						var deleteData = {};
 						if(tabs.length <= 1) { //判断是否根节点如果是则删除,否则遍历到对应节点
-							deleteData = orgCharts.data;
-							num = tabs[0];
 							dataTemp = orgCharts.data[tabs[0]];
 						} else {
 							var data = orgCharts.data[tabs[0]];
 							for(var x = 1; x < tabs.length - 1; x++) {
 								data = getData(data, tabs[x]);
 							}
-
 							dataTemp = data.child[tabs[tabs.length - 1]];
-							deleteData = data.child;
-							num = tabs[tabs.length - 1];
 						}
+						//获取目标标记
 						tab = orgCharts.target.getAttribute("org_tab");
 						tabs = tab.split("-");
 						var data = orgCharts.data[tabs[0]];
 						for(var x = 1; x < tabs.length; x++) {
 							data = getData(data, tabs[x]);
 						}
-
-						data.child.push(dataTemp);
-
+						data.child[data.child.length]=dataTemp;
 						orgCharts.draw();
 						orgCharts.menuOperation.copy = false;
 					}
@@ -519,9 +501,11 @@ orgCharts = {
 				orgCharts.target.parentNode.parentNode.style.border = 'none';
 				orgCharts.target.parentNode.parentNode.style.background = '';
 				orgCharts.target.parentNode.parentNode.onmouseup = function() {};
-				orgCharts.targetF.parentNode.parentNode.style.border = 'none';
-				orgCharts.targetF.parentNode.parentNode.style.background = '';
-				orgCharts.targetF.parentNode.parentNode.onmouseup = function() {};
+				if(orgCharts.targetF != null) {
+					orgCharts.targetF.parentNode.parentNode.style.border = 'none';
+					orgCharts.targetF.parentNode.parentNode.style.background = '';
+					orgCharts.targetF.parentNode.parentNode.onmouseup = function() {};
+				}
 				orgCharts.menuOperation.copy = false;
 				orgCharts.menuOperation.cut = false;
 			}
@@ -537,65 +521,68 @@ orgCharts = {
 
 		drawNodes(orgCharts.data, parent_div, "");
 	}
-}
 
-function getData(dataX, num) {
-	return dataX.child[num]; //对应节点获取数据
-}
-
-//关闭菜单
-function closeOrgMenue() {
-	var menu = document.getElementById("org_menu_id");
-	if(menu.style.display == "") {
-		menu.style.display = "none";
-	}
-}
-
-function setMouseMove(id, T) {
-	//鼠标移动事件 start
-	var el = document.getElementById(id);
-	el.style.left = '0px';
-	el.style.top = '0px';
-	var x = 0; //
-	var y = 0; //
-	var l = 0; //记录上次移动位置
-	var t = 0; //记录上次移动位置
-	var isDown = false;
-	//鼠标按下事件
-	el.onmousedown = function(e) {
-		if(T) {
-			//获取x坐标和y坐标
-			x = e.clientX;
-			y = e.clientY;
-			//开关打开
-			isDown = true;
-			//设置样式  
-			el.style.cursor = 'move';
-		}
-
+	function getData(dataX, num) {
+		return dataX.child[num]; //对应节点获取数据
 	}
 
-	//鼠标移动
-	window.onmousemove = function(e) {
-		if(isDown == false || !T) {
-			return;
-		}
-		//获取x和y
-		var nx = e.clientX;
-		var ny = e.clientY;
-		el.style.left = l + (nx - x) + 'px';
-		el.style.top = t + (ny - y) + 'px';
-	}
-	//鼠标抬起事件
-	onmouseup = function() {
-		if(T) {
-			//开关关闭
-			isDown = false;
-			el.style.cursor = 'default';
-			l = parseInt(el.style.left.split("px")[0]);
-			t = parseInt(el.style.top.split("px")[0]);
+	//关闭菜单
+	function closeOrgMenue() {
+		var menu = document.getElementById("org_menu_id");
+		if(menu.style.display == "") {
+			menu.style.display = "none";
 		}
 	}
 
-	//鼠标移动事件 end
+	//鼠标移动事件
+	function setMouseMove(id, T) {
+		//鼠标移动事件 start
+		var el = document.getElementById(id);
+		el.style.left = '0px';
+		el.style.top = '0px';
+		var x = 0; //
+		var y = 0; //
+		var l = 0; //记录上次移动位置
+		var t = 0; //记录上次移动位置
+		var isDown = false;
+		//鼠标按下事件
+		el.onmousedown = function(e) {
+
+			if(T) {
+				//获取x坐标和y坐标
+				x = e.clientX;
+				y = e.clientY;
+				//开关打开
+				isDown = true;
+				//设置样式  
+				el.style.cursor = 'move';
+			}
+
+		}
+
+		//鼠标移动
+		el.onmousemove = function(e) {
+			if(isDown == false || !T) {
+				return;
+			}
+			//获取x和y
+			var nx = e.clientX;
+			var ny = e.clientY;
+			el.style.left = l + (nx - x) + 'px';
+			el.style.top = t + (ny - y) + 'px';
+
+		}
+		//鼠标抬起事件
+		el.onmouseup = function() {
+			if(T) {
+				//开关关闭
+				isDown = false;
+				el.style.cursor = 'default';
+				l = parseInt(el.style.left.split("px")[0]);
+				t = parseInt(el.style.top.split("px")[0]);
+			}
+		}
+
+		//鼠标移动事件 end
+	}
 }

@@ -14,6 +14,7 @@ function OrgCharts() {
 		this.target = null, //当前选择的节点
 		this.menu = [];
 	this.onClick = {}; //元素点击事件
+	this.onAdd = null; //菜单添加事件
 	this.el_style = 'normal'; //元素风格
 	this.el_root = {}; //操作根元素
 	this.data = {}; //数据
@@ -81,6 +82,14 @@ function OrgCharts() {
 			if(isFunction) {  
 				orgCharts.onClick = data.onClick;
 			}
+
+			try {  
+				isFunction = typeof(eval(data.onAdd)) == "function";
+			} catch(e) {}
+			if(isFunction) {  
+				orgCharts.onAdd = data.onAdd;
+			}
+
 			//初始化成功  判断是否定义完成回调函数  有则执行回调
 
 			try {  
@@ -165,7 +174,7 @@ function OrgCharts() {
 				if(nodes[x].html == '' || nodes[x].html == undefined) {
 					contentSpan.innerText = nodes[x].name; //节点标题内容
 					content.setAttribute("class", "node node-" + orgCharts.el_style); //节点容器样式
-					if(nodes[x].child.length > 0) {
+					if(nodes[x].child!=undefined&&nodes[x].child.length > 0) {
 						if(nodes[x].open == 'true') {
 							open.setAttribute("class", "org-open-down org-open-down-" + orgCharts.el_style); //节点容器样式
 						} else {
@@ -176,7 +185,7 @@ function OrgCharts() {
 				} else {
 					content.setAttribute("class", "user-html"); //节点容器样式
 					contentSpan.innerHTML = nodes[x].html;
-					if(nodes[x].child.length > 0) {
+					if(nodes[x].child!=undefined&&nodes[x].child.length > 0) {
 						if(nodes[x].open == 'true') {
 							open.setAttribute("class", "org-open-down org-open-down-" + orgCharts.el_style); //节点容器样式
 						} else {
@@ -190,18 +199,30 @@ function OrgCharts() {
 				content.appendChild(open);
 
 				//点击回调 start
-
+				contentSpan.onmousedown = function(oEvent) {
+					if(!oEvent) oEvent = window.event;
+					oEvent.stopPropagation();
+				}
 				contentSpan.onmouseup = function(oEvent) {
 					if(!oEvent) oEvent = window.event;
-
+					oEvent.stopPropagation();
 					if(oEvent.button == 2) {
-						if(orgCharts.target == null) {
-							orgCharts.targetF = this;
-							orgCharts.target = this;
+						document.getElementById("org_menu_delete").style.display = '';
+						document.getElementById("org_menu_cut").style.display = '';
+						document.getElementById("org_menu_copy").style.display = '';
+						if(orgCharts.menuOperation.cut || orgCharts.menuOperation.copy) {
+							document.getElementById("org_menu_paste").style.display = '';
 						} else {
-							orgCharts.targetF = orgCharts.target;
-							orgCharts.target = this;
+							document.getElementById("org_menu_paste").style.display = 'none';
 						}
+
+						if(orgCharts.onAdd == null) {
+							document.getElementById("org_menu_add").style.display = 'none';
+						} else {
+							document.getElementById("org_menu_add").style.display = '';
+						}
+
+						orgCharts.target = this;
 						var menu = document.getElementById("org_menu_id");
 						menu.style.left = this.offsetLeft + 'px';
 						menu.style.top = (this.offsetTop - 30) + 'px';
@@ -302,7 +323,7 @@ function OrgCharts() {
 
 				node.appendChild(content); //添加标题
 
-				if(nodes[x].child.length > 0) {
+				if(nodes[x].child!=undefined&&nodes[x].child.length > 0) {
 
 					var span_div = document.createElement("div"); //竖的线条
 					var span = document.createElement("span"); //竖的线条
@@ -364,8 +385,27 @@ function OrgCharts() {
 						img.src = "svg/plus-circle.svg";
 						items.appendChild(img);
 						img.title = '添加节点';
+						img.id = 'org_menu_add';
+						img.onclick = function() {
+							closeOrgMenue();
+							var tab = orgCharts.target.getAttribute("org_tab");
+							var tabs = tab.split("-");
+							var dataTemp = {};
+							if(tabs.length <= 1) { //判断是否根节点如果是则删除,否则遍历到对应节点
+								dataTemp = JSON.parse(JSON.stringify(orgCharts.data[tabs[0]]));
+							} else {
+								var data = JSON.parse(JSON.stringify(orgCharts.data[tabs[0]]));
+								for(var x = 1; x < tabs.length - 1; x++) {
+									data = getData(data, tabs[x]);
+								}
+								dataTemp = data.child[tabs[tabs.length - 1]];
+							}
+							orgCharts.onAdd(dataTemp, tab);
+
+						}
 						break;
 					case 'delete':
+						img.id = 'org_menu_delete';
 						img.src = "svg/minus-circle.svg";
 						items.appendChild(img);
 						img.title = '删除节点';
@@ -387,13 +427,18 @@ function OrgCharts() {
 						}
 						break;
 					case 'cut':
+						img.id = 'org_menu_cut';
 						img.src = "svg/cut.svg";
 						items.appendChild(img);
 						img.title = '剪切';
 						paste = true;
 						img.onclick = function() {
-							orgCharts.targetF.parentNode.parentNode.style.border = orgCharts.target.parentNode.parentNode.style.border;
-							orgCharts.targetF.parentNode.parentNode.style.background = orgCharts.target.parentNode.parentNode.style.background;
+							if(orgCharts.targetF != null) {
+								orgCharts.targetF.parentNode.parentNode.style.border = 'none';
+								orgCharts.targetF.parentNode.parentNode.style.background = '';
+								orgCharts.targetF.parentNode.parentNode.onmouseup = function() {};
+							}
+							orgCharts.targetF = orgCharts.target;
 							orgCharts.target.parentNode.parentNode.style.border = '1px dashed #bf2727';
 							orgCharts.target.parentNode.parentNode.style.background = '#fbfbfb';
 							orgCharts.menuOperation.cut = true;
@@ -401,19 +446,23 @@ function OrgCharts() {
 							orgCharts.target.parentNode.parentNode.onmouseup = function() {
 								closeOrgMenue()
 							}
+							closeOrgMenue();
 
 						}
 						break;
 					case 'copy':
+						img.id = 'org_menu_copy';
 						img.src = "svg/copy.svg";
 						items.appendChild(img);
 						img.title = '拷贝';
 						paste = true;
 						img.onclick = function() {
-							orgCharts.targetF.parentNode.parentNode.style.border = orgCharts.target.parentNode.parentNode.style.border;
-							orgCharts.targetF.parentNode.parentNode.style.background = orgCharts.target.parentNode.parentNode.style.background;
-							orgCharts.targetF.parentNode.parentNode.onmouseup = orgCharts.target.parentNode.parentNode.onmouseup;
-
+							if(orgCharts.targetF != null) {
+								orgCharts.targetF.parentNode.parentNode.style.border = 'none';
+								orgCharts.targetF.parentNode.parentNode.style.background = '';
+								orgCharts.targetF.parentNode.parentNode.onmouseup = function() {};
+							}
+							orgCharts.targetF = orgCharts.target;
 							orgCharts.target.parentNode.parentNode.style.border = '1px dashed #bf2727';
 							orgCharts.target.parentNode.parentNode.style.background = '#fbfbfb';
 							orgCharts.menuOperation.copy = true;
@@ -426,15 +475,18 @@ function OrgCharts() {
 			}
 			if(paste) {
 				var img = document.createElement('img');
+				img.id = "org_menu_paste";
 				img.style.width = '20px';
 				img.style.cursor = 'pointer';
 				img.style.margin = '2px';
 				img.src = "svg/paste.svg";
 				items.appendChild(img);
 				img.title = '粘贴';
-
 				img.onclick = function() {
+					orgCharts.targetF.parentNode.parentNode.style.border = 'none';
+					orgCharts.targetF.parentNode.parentNode.style.background = '';
 					if(orgCharts.menuOperation.cut == true) {
+
 						//获取标记
 						var tab = orgCharts.targetF.getAttribute("org_tab");
 						var tabs = tab.split("-");
@@ -455,53 +507,57 @@ function OrgCharts() {
 							deleteData = data.child;
 							num = tabs[tabs.length - 1];
 						}
-						tab = orgCharts.target.getAttribute("org_tab");
-						tabs = tab.split("-");
-						var data = orgCharts.data[tabs[0]];
-						for(var x = 1; x < tabs.length; x++) {
-							data = getData(data, tabs[x]);
-						}
 
-						data.child.push(dataTemp);
+						if(orgCharts.target == null) {
+							orgCharts.data.push(dataTemp);
+						} else {
+							tab = orgCharts.target.getAttribute("org_tab");
+							tabs = tab.split("-");
+
+							var data = orgCharts.data[tabs[0]];
+							for(var x = 1; x < tabs.length; x++) {
+								data = getData(data, tabs[x]);
+							}
+
+							data.child.push(dataTemp);
+						}
 
 						deleteData.splice(num, 1);
 
 						orgCharts.draw();
 						orgCharts.menuOperation.cut = false;
 					} else if(orgCharts.menuOperation.copy == true) {
-						//获取标记
+						//获取源 标记
 						var tab = orgCharts.targetF.getAttribute("org_tab");
 						var tabs = tab.split("-");
 						var dataTemp = {};
-						var num = 0;
-						var deleteData = {};
 						if(tabs.length <= 1) { //判断是否根节点如果是则删除,否则遍历到对应节点
-							deleteData = orgCharts.data;
-							num = tabs[0];
-							dataTemp = orgCharts.data[tabs[0]];
+							dataTemp = JSON.parse(JSON.stringify(orgCharts.data[tabs[0]]));
 						} else {
-							var data = orgCharts.data[tabs[0]];
+							var data = JSON.parse(JSON.stringify(orgCharts.data[tabs[0]]));
 							for(var x = 1; x < tabs.length - 1; x++) {
 								data = getData(data, tabs[x]);
 							}
-
 							dataTemp = data.child[tabs[tabs.length - 1]];
-							deleteData = data.child;
-							num = tabs[tabs.length - 1];
 						}
-						tab = orgCharts.target.getAttribute("org_tab");
-						tabs = tab.split("-");
-						var data = orgCharts.data[tabs[0]];
-						for(var x = 1; x < tabs.length; x++) {
-							data = getData(data, tabs[x]);
+						//获取目标标记
+
+						if(orgCharts.target == null) {
+							orgCharts.data.push(dataTemp);
+						} else {
+
+							tab = orgCharts.target.getAttribute("org_tab");
+							tabs = tab.split("-");
+							var data = orgCharts.data[tabs[0]];
+							for(var x = 1; x < tabs.length; x++) {
+								data = getData(data, tabs[x]);
+							}
+							data.child.push(dataTemp);
 						}
-
-						data.child.push(dataTemp);
-
 						orgCharts.draw();
 						orgCharts.menuOperation.copy = false;
 					}
-
+					orgCharts.targetF = null;
 				}
 			}
 
@@ -514,12 +570,16 @@ function OrgCharts() {
 			img.title = '关闭';
 			img.onclick = function() {
 				closeOrgMenue();
-				orgCharts.target.parentNode.parentNode.style.border = 'none';
-				orgCharts.target.parentNode.parentNode.style.background = '';
-				orgCharts.target.parentNode.parentNode.onmouseup = function() {};
-				orgCharts.targetF.parentNode.parentNode.style.border = 'none';
-				orgCharts.targetF.parentNode.parentNode.style.background = '';
-				orgCharts.targetF.parentNode.parentNode.onmouseup = function() {};
+				if(orgCharts.targetF != null) {
+					orgCharts.targetF.parentNode.parentNode.style.border = 'none';
+					orgCharts.targetF.parentNode.parentNode.style.background = '';
+					orgCharts.targetF.parentNode.parentNode.onmouseup = function() {};
+				}
+				if(orgCharts.targetF != null) {
+					orgCharts.targetF.parentNode.parentNode.style.border = 'none';
+					orgCharts.targetF.parentNode.parentNode.style.background = '';
+					orgCharts.targetF.parentNode.parentNode.onmouseup = function() {};
+				}
 				orgCharts.menuOperation.copy = false;
 				orgCharts.menuOperation.cut = false;
 			}
@@ -532,6 +592,10 @@ function OrgCharts() {
 			orgCharts.el_root.appendChild(menu);
 		}
 		//初始化右键菜单 end
+
+		orgCharts.el_root.oncontextmenu = function() {
+			event.returnValue = false;
+		}
 
 		drawNodes(orgCharts.data, parent_div, "");
 	}
@@ -561,7 +625,6 @@ function OrgCharts() {
 		var isDown = false;
 		//鼠标按下事件
 		el.onmousedown = function(e) {
-
 			if(T) {
 				//获取x坐标和y坐标
 				x = e.clientX;
@@ -587,16 +650,56 @@ function OrgCharts() {
 
 		}
 		//鼠标抬起事件
-		el.onmouseup = function() {
+		el.onmouseup = function(oEvent) {
 			if(T) {
 				//开关关闭
 				isDown = false;
 				el.style.cursor = 'default';
 				l = parseInt(el.style.left.split("px")[0]);
 				t = parseInt(el.style.top.split("px")[0]);
+				if(!oEvent) oEvent = window.event;
+				if(oEvent.button == 2) {
+					orgCharts.target = null;
+					var menu = document.getElementById("org_menu_id");
+					document.getElementById("org_menu_delete").style.display = 'none';
+					document.getElementById("org_menu_cut").style.display = 'none';
+					document.getElementById("org_menu_copy").style.display = 'none';
+
+					if(orgCharts.menuOperation.cut || orgCharts.menuOperation.copy) {
+						document.getElementById("org_menu_paste").style.display = '';
+					} else {
+						document.getElementById("org_menu_paste").style.display = 'none';
+					}
+
+					if(orgCharts.onAdd == null) {
+						document.getElementById("org_menu_add").style.display = 'none';
+					} else {
+						document.getElementById("org_menu_add").style.display = '';
+					}
+
+					menu.style.left = (oEvent.clientX - el.offsetLeft - 30) + 'px';
+					menu.style.top = (oEvent.clientY - el.offsetTop - 30) + 'px';
+					if(menu.style.display == "none") {
+						menu.style.display = "";
+					}
+				}
 			}
 		}
 
 		//鼠标移动事件 end
+	}
+	//添加数据
+	this.addNodes = function(dataTemp, tab) {
+		var tabs = tab.split("-");
+		var data = orgCharts.data[tabs[0]];
+		for(var x = 1; x < tabs.length; x++) {
+			data = getData(data, tabs[x]);
+		}
+		data.child.push(dataTemp);
+		orgCharts.draw();
+	}
+	
+	this.getData=function(){
+		return orgCharts.data;
 	}
 }

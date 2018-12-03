@@ -32,6 +32,7 @@
 
 .user-html>span {
 	display: inline-block;
+	cursor: pointer;
 }
 
 

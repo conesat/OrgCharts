@@ -174,7 +174,7 @@ function OrgCharts() {
 				if(nodes[x].html == '' || nodes[x].html == undefined) {
 					contentSpan.innerText = nodes[x].name; //节点标题内容
 					content.setAttribute("class", "node node-" + orgCharts.el_style); //节点容器样式
-					if(nodes[x].child!=undefined&&nodes[x].child.length > 0) {
+					if(nodes[x].child != undefined && nodes[x].child.length > 0) {
 						if(nodes[x].open == 'true') {
 							open.setAttribute("class", "org-open-down org-open-down-" + orgCharts.el_style); //节点容器样式
 						} else {
@@ -185,7 +185,7 @@ function OrgCharts() {
 				} else {
 					content.setAttribute("class", "user-html"); //节点容器样式
 					contentSpan.innerHTML = nodes[x].html;
-					if(nodes[x].child!=undefined&&nodes[x].child.length > 0) {
+					if(nodes[x].child != undefined && nodes[x].child.length > 0) {
 						if(nodes[x].open == 'true') {
 							open.setAttribute("class", "org-open-down org-open-down-" + orgCharts.el_style); //节点容器样式
 						} else {
@@ -323,7 +323,7 @@ function OrgCharts() {
 
 				node.appendChild(content); //添加标题
 
-				if(nodes[x].child!=undefined&&nodes[x].child.length > 0) {
+				if(nodes[x].child != undefined && nodes[x].child.length > 0) {
 
 					var span_div = document.createElement("div"); //竖的线条
 					var span = document.createElement("span"); //竖的线条
@@ -388,19 +388,23 @@ function OrgCharts() {
 						img.id = 'org_menu_add';
 						img.onclick = function() {
 							closeOrgMenue();
-							var tab = orgCharts.target.getAttribute("org_tab");
-							var tabs = tab.split("-");
-							var dataTemp = {};
-							if(tabs.length <= 1) { //判断是否根节点如果是则删除,否则遍历到对应节点
-								dataTemp = JSON.parse(JSON.stringify(orgCharts.data[tabs[0]]));
-							} else {
-								var data = JSON.parse(JSON.stringify(orgCharts.data[tabs[0]]));
-								for(var x = 1; x < tabs.length - 1; x++) {
-									data = getData(data, tabs[x]);
+							if(orgCharts.target != null) {
+								var tab = orgCharts.target.getAttribute("org_tab");
+								var tabs = tab.split("-");
+								var dataTemp = {};
+								if(tabs.length <= 1) { //判断是否根节点如果是则删除,否则遍历到对应节点
+									dataTemp = JSON.parse(JSON.stringify(orgCharts.data[tabs[0]]));
+								} else {
+									var data = JSON.parse(JSON.stringify(orgCharts.data[tabs[0]]));
+									for(var x = 1; x < tabs.length - 1; x++) {
+										data = getData(data, tabs[x]);
+									}
+									dataTemp = data.child[tabs[tabs.length - 1]];
 								}
-								dataTemp = data.child[tabs[tabs.length - 1]];
+								orgCharts.onAdd(dataTemp, tab);
+							} else {
+								orgCharts.onAdd(dataTemp, null);
 							}
-							orgCharts.onAdd(dataTemp, tab);
 
 						}
 						break;
@@ -690,16 +694,20 @@ function OrgCharts() {
 	}
 	//添加数据
 	this.addNodes = function(dataTemp, tab) {
-		var tabs = tab.split("-");
-		var data = orgCharts.data[tabs[0]];
-		for(var x = 1; x < tabs.length; x++) {
-			data = getData(data, tabs[x]);
+		if(tab == null) {
+			orgCharts.data.push(dataTemp);
+		} else {
+			var tabs = tab.split("-");
+			var data = orgCharts.data[tabs[0]];
+			for(var x = 1; x < tabs.length; x++) {
+				data = getData(data, tabs[x]);
+			}
+			data.child.push(dataTemp);
 		}
-		data.child.push(dataTemp);
 		orgCharts.draw();
 	}
-	
-	this.getData=function(){
+
+	this.getData = function() {
 		return orgCharts.data;
 	}
 }

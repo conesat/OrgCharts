@@ -13,7 +13,7 @@
 
 	<body onload="draw();">
 
-		<div style="background: #eee;height: 50px;width: 100%;text-align: center;line-height: 50px;">头部面板</div>
+		<div style="background: #eee;height: 50px;width: 100%;text-align: center;line-height: 50px;">组织结构插件  by 多多</div>
 		<div style="display: flex;flex-direction: row;">
 
 			<div style="width: 50px;height: 800px;padding: 2px;text-align: center;">
@@ -60,6 +60,7 @@
 				onAdd:function(data,tab){//添加回调 data为点击的数据  tab为标记点,用于插入新数据
 					var myData=new Object();
 					myData.name=prompt("输入name","新节点");
+					myData.child=[];
 					orgCharts.addNodes(myData,tab);
 				}
 			});

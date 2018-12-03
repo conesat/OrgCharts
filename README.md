@@ -1,12 +1,7 @@
 # OrgCharts
 组织结构图
-![Image](https://github.com/conesat/OrgCharts/blob/master/github_image/rec.gif)
+![Image](https://github.com/conesat/OrgCharts/blob/master/github_image/rec5.gif)
 
-![Image](https://github.com/conesat/OrgCharts/blob/master/github_image/rec2.gif)
-
-![Image](https://github.com/conesat/OrgCharts/blob/master/github_image/rec3.gif)
-
-![Image](https://github.com/conesat/OrgCharts/blob/master/github_image/rec4.gif)
 
 已知问题:拖动时,鼠标放在元素上会触发点击回调
 
@@ -14,6 +9,7 @@
 
 用法:
 
+	var orgCharts=new OrgCharts();
 	//初始化组件  
 	Org.init({
 		id: "org_charts", //必填
@@ -26,6 +22,12 @@
 		},
 		onClick: function(el, data) { //点击方法  el被点击的元素  data对应传入数据
 			alert('点击了'+data.name);
+		},
+		onAdd:function(data,tab){//添加回调 data为点击的数据  tab为标记点,用于插入新数据
+			var myData=new Object();
+			myData.name=prompt("输入name","新节点");
+			myData.child=[];
+			orgCharts.addNodes(myData,tab);
 		}
 	});
 	

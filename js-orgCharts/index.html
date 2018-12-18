@@ -46,7 +46,7 @@
 			orgCharts.init({
 				id: "org_charts", //必填
 				theme: '', //可选
-				menu:['add','delete','cut','copy'],//右键菜单项
+				menu:['edit','add','delete','cut','copy','absorbed'],//右键菜单项
 				success: function() { //可选
 					//console.log("初始化完成")
 				},
@@ -61,7 +61,15 @@
 					var myData=new Object();
 					myData.name=prompt("输入name","新节点");
 					myData.child=[];
-					orgCharts.addNodes(myData,tab);
+					if(myData.name!=null){
+						orgCharts.addNodes(myData,tab);
+					}
+				},
+				onEdit:function(data){//编辑回调 data为点击的数据  tab为标记点,用于插入新数据
+					data.html=prompt("输入name",data.html);
+					if(data.name!=""){
+						orgCharts.draw();//重新绘制
+					}
 				}
 			});
 

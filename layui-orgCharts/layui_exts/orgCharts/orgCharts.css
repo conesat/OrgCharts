@@ -1,10 +1,9 @@
-/* 样式加载完毕的标识 */
-html #layuicss-orgCharts{display: none; position: absolute; width: 1989px;} 
- 
-/*层级样式*/
 /*层级样式*/
 
 .root_div {
+	-moz-user-select: none;
+	-webkit-user-select: none;
+	user-select: none;
 	text-align: center;
 	position: relative;
 	cursor: move;
@@ -28,7 +27,14 @@ html #layuicss-orgCharts{display: none; position: absolute; width: 1989px;}
 
 .user-html {
 	display: inline-block;
+	margin: 0 10px;
 }
+
+.user-html>span {
+	display: inline-block;
+	cursor: pointer;
+}
+
 
 .org-open-up {
 	cursor: pointer;
@@ -36,9 +42,12 @@ html #layuicss-orgCharts{display: none; position: absolute; width: 1989px;}
 	margin: 2px auto;
 	width: 0;
 	height: 0;
-	border-left: 6px solid transparent;
-	border-right: 6px solid transparent;
-	border-bottom: 10px solid #fff;
+	border-left: 8px solid transparent;
+	border-right: 8px solid transparent;
+}
+
+.org-open-up-normal {
+	border-top: 10px solid #3CAEE4;
 }
 
 .org-open-down {
@@ -47,31 +56,12 @@ html #layuicss-orgCharts{display: none; position: absolute; width: 1989px;}
 	margin: 2px auto;
 	width: 0;
 	height: 0;
-	border-left: 6px solid transparent;
-	border-right: 6px solid transparent;
-	border-top: 10px solid #fff;
+	border-left: 8px solid transparent;
+	border-right: 8px solid transparent;
 }
 
-.org-open-up-html {
-	cursor: pointer;
-	height: 20px;
-	margin: 2px auto;
-	width: 0;
-	height: 0;
-	border-left: 6px solid transparent;
-	border-right: 6px solid transparent;
-	border-bottom: 10px solid #333;
-}
-
-.org-open-down-html {
-	cursor: pointer;
-	height: 20px;
-	margin: 2px auto;
-	width: 0;
-	height: 0;
-	border-left: 6px solid transparent;
-	border-right: 6px solid transparent;
-	border-top: 10px solid #333;
+.org-open-down-normal {
+	border-bottom: 10px solid #3CAEE4;
 }
 
 
@@ -88,6 +78,12 @@ html #layuicss-orgCharts{display: none; position: absolute; width: 1989px;}
 	min-width: 40px;
 	display: inline-flex;
 	padding: 2px 10px;
+	
+	line-height: 30px;
+	margin: 0px 20px;
+	color: #fff;
+	background: #3caee4;
+	border-radius: 3px;
 }
 
 
@@ -111,9 +107,9 @@ html #layuicss-orgCharts{display: none; position: absolute; width: 1989px;}
 /*节点常规样式*/
 
 .root_div .node-normal {
-	margin: 0px 20px;
+	/*margin: 0px 20px;*/
 	color: #fff;
-	background: #3caee4;
+	/*background: #3caee4;*/
 }
 
 
@@ -151,7 +147,15 @@ html #layuicss-orgCharts{display: none; position: absolute; width: 1989px;}
 
 /*主题样式*/
 
-.root_div .node-red {
+.org-open-up-red {
+	border-top: 10px solid red;
+}
+
+.org-open-down-red {
+	border-bottom: 10px solid red;
+}
+
+.root_div .node-red>span {
 	margin: 0px 20px;
 	color: #fff;
 	background: red;
@@ -168,7 +172,15 @@ html #layuicss-orgCharts{display: none; position: absolute; width: 1989px;}
 	height: 1px;
 }
 
-.root_div .node-green {
+.org-open-up-green {
+	border-top: 10px solid #1ce45a;
+}
+
+.org-open-down-green {
+	border-bottom: 10px solid #1ce45a;
+}
+
+.root_div .node-green>span {
 	margin: 0px 20px;
 	color: #fff;
 	background: #1ce45a;
@@ -185,7 +197,15 @@ html #layuicss-orgCharts{display: none; position: absolute; width: 1989px;}
 	height: 1px;
 }
 
-.root_div .node-black {
+.org-open-up-black {
+	border-top: 10px solid #000000;
+}
+
+.org-open-down-black {
+	border-bottom: 10px solid #000000;
+}
+
+.root_div .node-black>span {
 	margin: 0px 20px;
 	color: #fff;
 	background: #000000;
@@ -202,7 +222,15 @@ html #layuicss-orgCharts{display: none; position: absolute; width: 1989px;}
 	height: 1px;
 }
 
-.root_div .node-gray {
+.org-open-up-gray {
+	border-top: 10px solid #6f6f6f;
+}
+
+.org-open-down-gray {
+	border-bottom: 10px solid #6f6f6f;
+}
+
+.root_div .node-gray>span {
 	margin: 0px 20px;
 	color: #fff;
 	background: #6f6f6f;

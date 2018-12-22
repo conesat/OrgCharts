@@ -14,6 +14,7 @@
 	<body onload="draw();">
 
 		<div style="background: #eee;height: 50px;width: 100%;text-align: center;line-height: 50px;">组织结构插件  by 多多</div>
+		
 		<div style="display: flex;flex-direction: row;">
 
 			<div style="width: 50px;height: 800px;padding: 2px;text-align: center;">
@@ -66,7 +67,7 @@
 					}
 				},
 				onEdit:function(data){//编辑回调 data为点击的数据  tab为标记点,用于插入新数据
-					data.html=prompt("输入name",data.html);
+					data.name=prompt("输入name",data.html);
 					if(data.name!=""){
 						orgCharts.draw();//重新绘制
 					}
@@ -117,3 +118,4 @@
 	</script>
 
 </html>
+

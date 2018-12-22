@@ -236,6 +236,8 @@ function OrgCharts() {
 						document.getElementById("org_menu_delete").style.display = '';
 						document.getElementById("org_menu_cut").style.display = '';
 						document.getElementById("org_menu_copy").style.display = '';
+                        document.getElementById("org_menu_absorbed").style.display = '';
+                        document.getElementById("org_menu_edit").style.display = '';
 						if(orgCharts.menuOperation.cut || orgCharts.menuOperation.copy) {
 							document.getElementById("org_menu_paste").style.display = '';
 						} else {
@@ -503,7 +505,7 @@ function OrgCharts() {
 						}
 						break;
 					case 'absorbed':
-						img.id = 'org_menu_copy';
+						img.id = 'org_menu_absorbed';
 						img.src = "svg/absorbed.svg";
 						items.appendChild(img);
 						img.title = '专注模式';
@@ -595,7 +597,7 @@ function OrgCharts() {
 
 						break;
 					case 'edit':
-						img.id = 'org_menu_copy';
+						img.id = 'org_menu_edit';
 						img.src = "svg/edit.svg";
 						items.appendChild(img);
 						img.title = '编辑';
@@ -813,6 +815,8 @@ function OrgCharts() {
 					document.getElementById("org_menu_delete").style.display = 'none';
 					document.getElementById("org_menu_cut").style.display = 'none';
 					document.getElementById("org_menu_copy").style.display = 'none';
+                    document.getElementById("org_menu_absorbed").style.display = 'none';
+                    document.getElementById("org_menu_edit").style.display = 'none';
 
 					if(orgCharts.menuOperation.cut || orgCharts.menuOperation.copy) {
 						document.getElementById("org_menu_paste").style.display = '';
@@ -853,6 +857,9 @@ function OrgCharts() {
 	}
 
 	this.getData = function() {
+		if (orgCharts.resetD.length>0){
+			return orgCharts.resetD[0].data;
+		}
 		return orgCharts.data;
 	}
 }

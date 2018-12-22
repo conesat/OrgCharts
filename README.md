@@ -14,20 +14,30 @@
 	Org.init({
 		id: "org_charts", //必填
 		theme: '', //可选
+		menu:['edit','add','delete','cut','copy','absorbed'],//右键菜单项
 		success: function() { //可选
-			console.log("初始化完成")
+			//console.log("初始化完成")
 		},
 		error: function(e) { //可选
-			console.log(e);
+			//console.log(e);
 		},
 		onClick: function(el, data) { //点击方法  el被点击的元素  data对应传入数据
-			alert('点击了'+data.name);
+			//console.log(data.id);
+			alert('点击了' + data.name);
 		},
 		onAdd:function(data,tab){//添加回调 data为点击的数据  tab为标记点,用于插入新数据
 			var myData=new Object();
 			myData.name=prompt("输入name","新节点");
 			myData.child=[];
-			orgCharts.addNodes(myData,tab);
+			if(myData.name!=null){
+				orgCharts.addNodes(myData,tab);
+			}
+		},
+		onEdit:function(data){//编辑回调 data为点击的数据  tab为标记点,用于插入新数据
+			data.html=prompt("输入name",data.html);
+			if(data.name!=""){
+				orgCharts.draw();//重新绘制
+			}
 		}
 	});
 	

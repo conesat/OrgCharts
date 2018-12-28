@@ -1,7 +1,7 @@
 # OrgCharts
 组织结构图
 
-![输入图片说明](https://gitee.com/conesat/OrgCharts/raw/master/rec-image/rec.gif "在这里输入图片标题")
+![输入图片说明](https://github.com/conesat/OrgCharts/blob/master/rec-image/rec.gif "在这里输入图片标题")
 
 
 

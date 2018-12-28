@@ -5,7 +5,7 @@
 
 
 
-使用方法参见 [demo](https://gitee.com/conesat/OrgCharts/blob/master/js-orgCharts/index.html)  
+使用方法参见 [demo](https://github.com/conesat/OrgCharts/blob/master/js-orgCharts/index.html)  
 
 
 数据格式为

@@ -2,7 +2,7 @@
 组织结构图
 
 ![输入图片说明](https://github.com/conesat/OrgCharts/blob/master/rec-image/rec.gif "在这里输入图片标题")
-
+![输入图片说明](https://github.com/conesat/OrgCharts/blob/master/rec-image/REC0.gif "在这里输入图片标题")
 
 
 使用方法参见 [demo](https://github.com/conesat/OrgCharts/blob/master/js-orgCharts/index.html)  
